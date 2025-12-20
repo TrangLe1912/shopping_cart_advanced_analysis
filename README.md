@@ -87,7 +87,7 @@ $$Economic Value = Lift \times (Average \: Basket \: Value)$$
 - **Tư duy Mới:** Tính tổng lợi ích thực tế ($\sum Quantity \times Price$).
 
 **Biểu đồ "Cuộc chiến Tư duy" (Frequency vs Utility):**
-![Scatter Plot High Utility](images\03.png)
+![Scatter Plot High Utility](images/03.png)
 *(Hình 3: Sự phân tách giữa Frequent Itemsets (Xanh) và High-Utility Itemsets (Đỏ).)*
 
 **Sự thật ngỡ ngàng từ Dữ liệu:**
