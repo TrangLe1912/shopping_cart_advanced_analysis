@@ -3,7 +3,7 @@
 ![Data Mining](https://img.shields.io/badge/Domain-Data%20Mining-blue)
 ![Python](https://img.shields.io/badge/Python-3.9+-green)
 ![Algorithm](https://img.shields.io/badge/Algorithm-FP--Growth%20%26%20Apriori-orange)
-
+ ![Header](https://capsule-render.vercel.app/api?type=waving&height=300&color=gradient&text=WL-Win%20for%20Life&textBg=false&rotate=1&desc=Blog%202%20%20%20Cuộc%20chiến%20giữa%20"số%20lượng"%20và%20"chất%20lượng"&descAlign=50&descSize=20)
 Dự án này tập trung vào việc nghiên cứu và áp dụng các kỹ thuật khai phá luật kết hợp (Association Rules Mining) trên dữ liệu bán lẻ thực tế. Chúng tôi đi sâu vào việc so sánh hiệu năng giữa hai thuật toán kinh điển **Apriori** và **FP-Growth**, đồng thời đề xuất các chiến lược kinh doanh dựa trên trọng số giá trị hóa đơn.
 > **Case Study:** Online Retail Dataset (UCI)  
 > **Chủ đề:** So sánh Apriori vs. FP-Growth & Đột phá tư duy với High-Utility Mining  
