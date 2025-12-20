@@ -93,7 +93,7 @@ shopping_cart_advanced_analysis/
 │   ├── fp_growth_modelling.ipynb     # Mô hình FP-Growth cơ bản
 │   ├── nhom3.ipynb                   # PHÂN TÍCH TÀI CHÍNH (CHỦ ĐỀ 3)
 │   └── runs/                         # Log kết quả chạy tự động
-├── report_images/                    # Chứa biểu đồ xuất ra (Sunburst, Parallel...)
+|
 ├── src/                              # Thư viện hàm (apriori_library.py)
 ├── run_papermill.py                  # Script chạy tự động toàn bộ pipeline
 └── requirements.txt                  # Các thư viện cần thiết
