@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beyond Frequency: Tối Ưu Hóa Doanh Thu Bán Lẻ | Nhóm 3</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. RESET & VARIABLES --- */
+        :root {
+            --primary: #2563EB;      /* Xanh dương chủ đạo */
+            --secondary: #1E293B;    /* Xanh đen nền */
+            --accent: #F59E0B;       /* Vàng nổi bật */
+            --bg-light: #F8FAFC;     /* Nền sáng */
+            --text-dark: #334155;    /* Chữ đen */
+            --text-light: #F1F5F9;   /* Chữ trắng */
+            
+            --star: #10B981;         /* Màu xanh lá (Star) */
+            --gem: #EF4444;          /* Màu đỏ (Gem) */
+            --cow: #F59E0B;          /* Màu vàng (Cow) */
+            --dog: #94A3B8;          /* Màu xám (Dog) */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--text-dark); background-color: var(--bg-light); }
+        
+        /* --- 2. LAYOUT UTILITIES --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .section { padding: 80px 0; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: transform 0.3s ease; }
+        .card:hover { transform: translateY(-5px); }
+        img { max-width: 100%; border-radius: 12px; }
+
+        /* --- 3. HERO SECTION (Header) --- */
+        .hero {
+            background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
+            color: white;
+            padding: 120px 0 80px;
+            text-align: center;
+        }
+        .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; letter-spacing: -1px; line-height: 1.1; }
+        .hero p { font-size: 1.25rem; color: #94A3B8; max-width: 700px; margin: 0 auto 40px; }
+        .badges span {
+            background: rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 20px; 
+            font-size: 0.9rem; margin: 0 5px; border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* --- 4. PROBLEM & SOLUTION --- */
+        .stat-box { text-align: center; padding: 40px 20px; border-left: 4px solid var(--primary); }
+        .stat-number { font-size: 3rem; font-weight: 700; color: var(--primary); display: block; }
+        .stat-label { font-size: 1.1rem; color: #64748B; }
+
+        /* --- 5. METHODOLOGY (Timeline) --- */
+        .step { position: relative; padding-left: 40px; margin-bottom: 30px; }
+        .step::before {
+            content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; 
+            background: #E2E8F0; border-radius: 4px;
+        }
+        .step.active::before { background: var(--primary); }
+        .step h3 { font-size: 1.5rem; margin-bottom: 10px; }
+
+        /* --- 6. VISUALIZATION AREA --- */
+        .viz-container { background: white; padding: 20px; border-radius: 16px; border: 1px solid #E2E8F0; }
+        .viz-caption { margin-top: 15px; font-size: 0.9rem; color: #64748B; font-style: italic; text-align: center; }
+
+        /* --- 7. STRATEGY TABLE --- */
+        .strategy-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .strategy-table th, .strategy-table td { padding: 15px; text-align: left; border-bottom: 1px solid #E2E8F0; }
+        .tag { padding: 5px 12px; border-radius: 6px; font-weight: 600; font-size: 0.85rem; color: white; }
+        .tag.star { background: var(--star); }
+        .tag.gem { background: var(--gem); }
+        .tag.cow { background: var(--cow); }
+        .tag.dog { background: var(--dog); }
+
+        /* --- 8. RECOMMENDATION CARDS --- */
+        .rec-card { border-top: 5px solid transparent; }
+        .rec-card.gem { border-color: var(--gem); }
+        .rec-card.star { border-color: var(--star); }
+        .rec-card.cow { border-color: var(--cow); }
+        .rec-icon { font-size: 2rem; margin-bottom: 15px; display: inline-block; }
+
+        /* --- 9. FOOTER --- */
+        footer { background: var(--secondary); color: white; padding: 40px 0; text-align: center; }
+        footer a { color: var(--primary); text-decoration: none; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="container">
+            <div class="badges">
+                <span>Nhóm 3</span>
+                <span>Data Science Lab</span>
+                <span>FIT DNU</span>
+            </div>
+            <h1>BEYOND FREQUENCY</h1>
+            <p>Khi Tần Suất Không Phải Là Tất Cả: Tối Ưu Hóa Doanh Thu Bán Lẻ Bằng Chiến Lược "Weighted Association Rules"</p>
+            
+            <div class="tech-stack" style="margin-top: 20px;">
+                <span style="color: #FACC15;"><i class="fa-brands fa-python"></i> Python 3.11</span> &nbsp;|&nbsp; 
+                <span style="color: #38BDF8;"><i class="fa-solid fa-chart-pie"></i> Plotly</span> &nbsp;|&nbsp; 
+                <span style="color: #4ADE80;"><i class="fa-solid fa-brain"></i> FP-Growth</span>
+            </div>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div class="grid-2">
+                <div>
+                    <h2 style="font-size: 2rem; margin-bottom: 20px;">Vấn đề cốt lõi: <br><span style="color: var(--primary);">"Bẫy" Giá Rẻ</span></h2>
+                    <p style="font-size: 1.1rem; color: #475569;">
+                        Các thuật toán gợi ý truyền thống như Apriori thường ưu tiên các sản phẩm rẻ tiền được mua nhiều (túi nilon, thiệp) và bỏ qua các "mỏ vàng" doanh thu.
+                        <br><br>
+                        <strong>Mục tiêu dự án:</strong> Chuyển dịch từ việc tìm kiếm các sản phẩm <em>được mua nhiều nhất</em> sang các cặp sản phẩm <em>mang lại lợi nhuận cao nhất</em>.
+                    </p>
+                </div>
+                <div class="grid-2">
+                    <div class="stat-box card">
+                        <span class="stat-number">0.5%</span>
+                        <span class="stat-label">Min Support (Deep Mining)</span>
+                    </div>
+                    <div class="stat-box card">
+                        <span class="stat-number">80%</span>
+                        <span class="stat-label">Doanh thu đến từ 20% luật</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: white;">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 50px;">Phương Pháp Tiếp Cận 3 Lớp</h2>
+            <div class="grid-3">
+                <div class="step active">
+                    <h3>1. Deep Mining</h3>
+                    <p>Sử dụng thuật toán <strong>FP-Growth</strong> với ngưỡng cực thấp để "vét cạn" mọi hành vi ngách mà Apriori thường bỏ sót.</p>
+                </div>
+                <div class="step active">
+                    <h3>2. Financial Weighting</h3>
+                    <p>Tính toán lại trọng số cho từng luật dựa trên <strong>Dòng tiền thực tế</strong> (Revenue Impact) thay vì chỉ đếm số lần xuất hiện.</p>
+                </div>
+                <div class="step active">
+                    <h3>3. BCG Strategy</h3>
+                    <p>Phân loại sản phẩm vào Ma trận chiến lược: Stars, Cash Cows, Hidden Gems và Dogs để ra quyết định kinh doanh.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--bg-light);">
+        <div class="container">
+            <h2 style="margin-bottom: 30px;">🔍 Cấu Trúc Dòng Tiền (Revenue Anatomy)</h2>
+            <div class="grid-2">
+                <div class="viz-container">
+                    <img src="images/sunburst.png" alt="Biểu đồ Sunburst" onerror="this.src='https://via.placeholder.com/600x400?text=Place+Your+Sunburst+Image+Here'">
+                    <p class="viz-caption">Hình 1: Các combo sản phẩm chủ lực (Vòng trong: SP chính, Vòng ngoài: SP mua kèm)</p>
+                </div>
+                <div>
+                    <h3>Phát hiện đắt giá:</h3>
+                    <ul style="list-style: none; margin-top: 20px;">
+                        <li style="margin-bottom: 15px;"><i class="fa-solid fa-check-circle" style="color: var(--star);"></i> <strong>Cụm "Trà & Tiệc":</strong> Các sản phẩm như Teapot, Cake Stand tạo thành hệ sinh thái doanh thu khổng lồ.</li>
+                        <li style="margin-bottom: 15px;"><i class="fa-solid fa-check-circle" style="color: var(--star);"></i> <strong>Khách mua theo bộ:</strong> Xu hướng mua trọn bộ sưu tập (Collection) cao hơn mua lẻ.</li>
+                        <li><i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> <strong>Hiệu quả:</strong> Việc tập trung vào cụm này mang lại ROI cao gấp 3 lần so với bán phụ kiện.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: white;">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 20px;">🎯 Ma Trận Chiến Lược BCG</h2>
+            <p style="text-align: center; color: #64748B; margin-bottom: 50px;">Phân loại luật dựa trên tương quan: Tần suất (X) vs Giá trị (Y)</p>
+            
+            <div class="grid-2">
+                <div class="viz-container">
+                    <img src="images/matrix.png" alt="Biểu đồ Matrix" onerror="this.src='https://via.placeholder.com/600x400?text=Place+Your+Matrix+Image+Here'">
+                </div>
+                <div>
+                    <table class="strategy-table">
+                        <thead>
+                            <tr>
+                                <th>Nhóm</th>
+                                <th>Đặc điểm</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tag star">STARS ⭐</span></td>
+                                <td>Bán chạy & Đắt tiền</td>
+                                <td>Scale Up (Quảng cáo mạnh)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag gem">HIDDEN GEMS 💎</span></td>
+                                <td>Ít mua & Cực đắt</td>
+                                <td><strong>Cross-sell (Ưu tiên số 1)</strong></td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag cow">CASH COWS 🐄</span></td>
+                                <td>Bán chạy & Rẻ tiền</td>
+                                <td>Tự động gợi ý tại Checkout</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag dog">DOGS 🐕</span></td>
+                                <td>Ít mua & Rẻ tiền</td>
+                                <td>Loại bỏ / Giảm tồn kho</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: var(--bg-light);">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 50px;">🚀 Đề Xuất Chiến Dịch: "Operation High-Value"</h2>
+            <div class="grid-3">
+                <div class="card rec-card gem">
+                    <div class="rec-icon" style="color: var(--gem);"><i class="fa-solid fa-gem"></i></div>
+                    <h3>Gói "Premium Tea Time"</h3>
+                    <p style="color: #64748B; font-size: 0.9rem;">Dành cho nhóm <strong>Hidden Gems</strong></p>
+                    <hr style="margin: 15px 0; border: 0; border-top: 1px solid #E2E8F0;">
+                    <p>Đóng gói các sản phẩm ấm trà cao cấp thành Set quà tặng. Giảm giá 5% khi mua trọn bộ để kích thích AOV.</p>
+                </div>
+
+                <div class="card rec-card star">
+                    <div class="rec-icon" style="color: var(--star);"><i class="fa-solid fa-star"></i></div>
+                    <h3>Tái Cấu Trúc Trang Chủ</h3>
+                    <p style="color: #64748B; font-size: 0.9rem;">Dành cho nhóm <strong>Stars</strong></p>
+                    <hr style="margin: 15px 0; border: 0; border-top: 1px solid #E2E8F0;">
+                    <p>Thay thế vị trí Banner chính từ các món giá rẻ sang các món "Stars". Đảm bảo hàng tồn kho luôn sẵn có.</p>
+                </div>
+
+                <div class="card rec-card cow">
+                    <div class="rec-icon" style="color: var(--cow);"><i class="fa-solid fa-cart-shopping"></i></div>
+                    <h3>Smart Checkout</h3>
+                    <p style="color: #64748B; font-size: 0.9rem;">Dành cho nhóm <strong>Cash Cows</strong></p>
+                    <hr style="margin: 15px 0; border: 0; border-top: 1px solid #E2E8F0;">
+                    <p>Tự động gợi ý thêm túi, thiệp, nến tại bước thanh toán cuối cùng. Không tốn chi phí Marketing.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <h3>Retail Intelligence Project</h3>
+            <p style="opacity: 0.7; margin: 10px 0;">© 2025 Nhóm 3 - FIT DNU. Built with ❤️ and Data.</p>
+            <div style="margin-top: 20px;">
+                <a href="#" style="margin: 0 10px;"><i class="fa-brands fa-github"></i> Xem GitHub Repo</a>
+                <a href="#" style="margin: 0 10px;"><i class="fa-solid fa-file-pdf"></i> Tải Báo Cáo PDF</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
