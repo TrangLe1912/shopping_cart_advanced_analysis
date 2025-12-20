@@ -9,8 +9,8 @@
 | Vai trò | Thành viên | Nhiệm vụ chính |
 | :--- | :--- | :--- |
 | **Leader** | [Nguyễn Phương Nam] | Quản lý Pipeline, High-Utility Mining |
-| **Member** | [Trần Mạnh Tiến] | Data Cleaning, Benchmarking (Q2) |
-| **Member** | [Phạm Văn Huy] | Visualization, Business Insights (Q3, Q4) |
+| **Member** | [Phạm Văn Huy] | Data Cleaning, Benchmarking (Q2) |
+| **Member** | [Trần Mạnh Tiến] | Visualization, Business Insights (Q3, Q4) |
 
 ---
 
