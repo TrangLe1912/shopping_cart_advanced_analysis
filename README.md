@@ -81,7 +81,7 @@ $$Economic Value = Lift \times (Average \: Basket \: Value)$$
 
 ---
 
-### 4.2. High-Utility Itemset Mining (H.U.I.M) - Điểm 10
+### 4.2. High-Utility Itemset Mining (H.U.I.M)
 Đây là phần đột phá nhất của dự án. Chúng tôi thay đổi hoàn toàn tư duy:
 - **Tư duy Cũ:** Đếm số lần xuất hiện (0/1).
 - **Tư duy Mới:** Tính tổng lợi ích thực tế ($\sum Quantity \times Price$).
