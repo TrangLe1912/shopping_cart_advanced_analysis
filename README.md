@@ -1,7 +1,7 @@
-# 🚀 PROJECT KHAI PHÁ DỮ LIỆU: GIẢI MÃ "MỎ VÀNG" BÁN LẺ
+# PROJECT KHAI PHÁ DỮ LIỆU: GIẢI MÃ "MỎ VÀNG" BÁN LẺ
 > **Case Study:** Online Retail Dataset (UCI)  
 > **Chủ đề:** So sánh Apriori vs. FP-Growth & Đột phá tư duy với High-Utility Mining  
-> **Thực hiện bởi:** Team Tam Đại Quỷ Vương 👹
+> **Thực hiện bởi:** Team Tam Đại Quỷ Vương
 
 ---
 
@@ -14,7 +14,7 @@
 
 ---
 
-## 1. 🌟 Giới thiệu: Khi "Trực Giác" Bị Đánh Lừa (Feynman Style)
+## 1. Giới thiệu: Khi "Trực Giác" Bị Đánh Lừa
 
 Nếu bạn hỏi một chủ tiệm tạp hóa: *"Món gì quan trọng nhất?"*, họ sẽ chỉ ngay vào kệ mì tôm hoặc chai nước suối ở cửa ra vào. Tại sao? Vì **ai cũng mua nó** (Tần suất cao).
 
@@ -23,11 +23,11 @@ Nhưng hãy cẩn thận! Dữ liệu của chúng tôi đã chứng minh đó l
 - Bạn bán 10.000 gói mì (lãi 200đ) $\rightarrow$ Lãi 2 triệu.
 - Bạn chỉ cần bán 5 set quà Tết (lãi 500k) $\rightarrow$ Lãi 2.5 triệu.
 
-👉 **Sứ mệnh của dự án:** Chúng tôi không chỉ xây dựng hệ thống gợi ý "bán chạy" (Frequent), mà tham vọng hơn, chúng tôi đi tìm những **"Long Mạch"** lợi nhuận ẩn giấu (High-Utility) mà các thuật toán cổ điển thường bỏ sót.
+**Sứ mệnh của dự án:** Chúng tôi không chỉ xây dựng hệ thống gợi ý "bán chạy" (Frequent), mà tham vọng hơn, chúng tôi đi tìm những **"Long Mạch"** lợi nhuận ẩn giấu (High-Utility) mà các thuật toán cổ điển thường bỏ sót.
 
 ---
 
-## 2. 🛠️ Kiến trúc Dự án & Pipeline (Đáp ứng Q1)
+## 2. Kiến trúc Dự án & Pipeline
 
 Để xử lý bộ dữ liệu thực tế với hơn 500.000 dòng, chúng tôi không code rời rạc. Nhóm đã xây dựng một **Pipeline tự động hóa** chuẩn công nghiệp, được điều phối bởi `Papermill`.
 
@@ -37,7 +37,7 @@ Nhưng hãy cẩn thận! Dữ liệu của chúng tôi đã chứng minh đó l
 - **`FPGrowthMiner`**: "Vũ khí chủ lực" sử dụng cấu trúc cây FP-Tree để tối ưu tốc độ.
 - **`DataVisualizer`**: Bộ công cụ vẽ biểu đồ (Scatter, Network Graph) giúp số liệu "biết nói".
 
-### Quy trình xử lý (Notebooks Flow):
+### Quy trình xử lý:
 1.  `preprocessing_and_eda.ipynb` $\rightarrow$ Làm sạch & EDA.
 2.  `basket_preparation.ipynb` $\rightarrow$ Chuẩn bị ma trận.
 3.  `fp_growth_modelling.ipynb` $\rightarrow$ Chạy mô hình chính.
@@ -46,26 +46,26 @@ Nhưng hãy cẩn thận! Dữ liệu của chúng tôi đã chứng minh đó l
 
 Để chọn ra thuật toán tối ưu, chúng tôi đã đặt hai thuật toán lên bàn cân với bài test **"Độ nhạy tham số" (Sensitivity Analysis)**. Chúng tôi giảm dần ngưỡng `min_support` từ 5% xuống 0.5% để xem thuật toán nào "chịu nhiệt" tốt hơn.
 
-### Kết quả Thực nghiệm (The Benchmark):
+### Kết quả Thực nghiệm:
 *Dữ liệu thực tế từ 18,021 hóa đơn:*
 
 | Ngưỡng Support | FP-Growth (Giây) | Apriori (Giây) | Nhận định của Nhóm |
 | :--- | :--- | :--- | :--- |
 | **5.0%** (Dễ) | 0.77s | 0.05s | Apriori nhanh hơn ở dữ liệu thưa/ít luật. |
 | **2.0%** (Trung bình) | 1.54s | 1.61s | Điểm giao cắt (Turning Point). |
-| **1.0%** (Khó) | **3.06s** | **54.88s** | ⚠️ **BÁO ĐỘNG:** Apriori chậm gấp 18 lần. |
-| **0.5%** (Cực khó) | **8.08s** | *TREO MÁY* 💀 | ❌ **KNOCK-OUT:** Apriori thất bại hoàn toàn (Not Scalable). |
+| **1.0%** (Khó) | **3.06s** | **54.88s** | **BÁO ĐỘNG:** Apriori chậm gấp 18 lần. |
+| **0.5%** (Cực khó) | **8.08s** | *TREO MÁY* |  **KNOCK-OUT:** Apriori thất bại hoàn toàn (Not Scalable). |
 
-### 📊 Trực quan hóa kết quả (Đáp ứng Q3)
+### Trực quan hóa kết quả
 ![Biểu đồ so sánh thời gian chạy](images/Figure_1.png)
 *(Hình 1: Biểu đồ cột thể hiện sự chênh lệch thời gian chạy. Cột Apriori cao vút minh chứng cho sự kém hiệu quả khi dữ liệu lớn.)*
 
-👉 **Kết luận Q2:** Apriori phải quét cơ sở dữ liệu quá nhiều lần (Candidate Generation). **FP-Growth** với cấu trúc cây nén thông minh (FP-Tree) là lựa chọn **duy nhất** khả thi cho bài toán thực tế cần support thấp để tìm luật hiếm.
-## 4. 💎 Phân tích Nâng cao: Khi Trọng Số Lên Tiếng (Đáp ứng 5.3)
+**Kết luận Q2:** Apriori phải quét cơ sở dữ liệu quá nhiều lần (Candidate Generation). **FP-Growth** với cấu trúc cây nén thông minh (FP-Tree) là lựa chọn **duy nhất** khả thi cho bài toán thực tế cần support thấp để tìm luật hiếm.
+## 4. 💎 Phân tích Nâng cao: Khi Trọng Số Lên Tiếng
 
 Sau khi chọn FP-Growth, chúng tôi tiến sâu vào phân tích giá trị thực tế thay vì chỉ đếm số lượng.
 
-### 4.1. Săn tìm "Luật Ngách" (Niche Rules - Weighted Analysis)
+### 4.1. Săn tìm "Luật Ngách"
 Đa số các luật sinh ra là "rác" (Ví dụ: Mua Bút chì $\rightarrow$ Mua Tẩy). Chúng xuất hiện nhiều nhưng giá trị thấp.
 Nhóm áp dụng **Weighted Analysis** để lọc luật theo công thức:
 $$Economic Value = Lift \times (Average \: Basket \: Value)$$
@@ -81,7 +81,7 @@ $$Economic Value = Lift \times (Average \: Basket \: Value)$$
 
 ---
 
-### 4.2. High-Utility Itemset Mining (H.U.I.M) - Điểm 10 🏆
+### 4.2. High-Utility Itemset Mining (H.U.I.M) - Điểm 10
 Đây là phần đột phá nhất của dự án. Chúng tôi thay đổi hoàn toàn tư duy:
 - **Tư duy Cũ:** Đếm số lần xuất hiện (0/1).
 - **Tư duy Mới:** Tính tổng lợi ích thực tế ($\sum Quantity \times Price$).
@@ -98,8 +98,8 @@ $$Economic Value = Lift \times (Average \: Basket \: Value)$$
     - Xuất hiện: **1.43%** (Rất hiếm).
     - Doanh thu: **£809,815**.
 
-🔥 **KẾT LUẬN CHẤN ĐỘNG:** Sản phẩm Top 1 về doanh thu (Manual) xuất hiện ít hơn gấp 8 lần, nhưng mang lại dòng tiền **GẤP 7 LẦN** sản phẩm bán chạy nhất. Nếu dùng thuật toán cũ, ta đã bỏ qua "mỏ vàng" này.
-## 5. 💡 5 Insight Kinh Doanh & Đề Xuất Chiến Lược (Đáp ứng Q4)
+**KẾT LUẬN CHẤN ĐỘNG:** Sản phẩm Top 1 về doanh thu (Manual) xuất hiện ít hơn gấp 8 lần, nhưng mang lại dòng tiền **GẤP 7 LẦN** sản phẩm bán chạy nhất. Nếu dùng thuật toán cũ, ta đã bỏ qua "mỏ vàng" này.
+## 5.  5 Insight Kinh Doanh & Đề Xuất Chiến Lược
 
 Dựa trên dữ liệu, Team Tam Đại Quỷ Vương đề xuất 5 chiến lược hành động cụ thể cho quản lý cửa hàng:
 
@@ -125,7 +125,7 @@ Dựa trên dữ liệu, Team Tam Đại Quỷ Vương đề xuất 5 chiến l�
 
 ---
 
-## 6. 🏁 Tổng kết
+## 6. Tổng kết
 
 Dự án này là minh chứng cho thấy: **"Data không biết nói dối, chỉ có trực giác mới đánh lừa chúng ta."**
 Bằng việc chuyển đổi từ **Apriori** sang **FP-Growth** và nâng cấp lên **High-Utility Mining**, nhóm đã vẽ lại bức tranh lợi nhuận của doanh nghiệp:
@@ -133,8 +133,8 @@ Bằng việc chuyển đổi từ **Apriori** sang **FP-Growth** và nâng cấ
 - Sang việc tập trung nguồn lực vào nhóm **1% sản phẩm tạo ra 80% doanh thu** (Lab 2 Nâng cao).
 
 ---
-### 🔗 Tài nguyên Dự án
+### Tài nguyên Dự án
 - **Source Code:** [https://github.com/nguyenphuomgnam/lab2.git]
 - **Công cụ:** Python 3.12, MLxtend, Plotly, Pandas.
 
-*> Thực hiện bởi Tam Đại Quỷ Vương - FIT DNU CONQUER 2025* 🚀
+*> Thực hiện bởi Tam Đại Quỷ Vương - FIT DNU CONQUER 2025*
