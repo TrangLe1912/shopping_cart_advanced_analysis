@@ -1,11 +1,21 @@
 # 🛒 Market Basket Analysis: Advanced Association Rules Mining
-
+# Frequent vs. High-Utility: Cuộc chiến giữa "Số Lượng" và "Chất Lượng"
 ![Data Mining](https://img.shields.io/badge/Domain-Data%20Mining-blue)
 ![Python](https://img.shields.io/badge/Python-3.9+-green)
 ![Algorithm](https://img.shields.io/badge/Algorithm-FP--Growth%20%26%20Apriori-orange)
 
 Dự án này tập trung vào việc nghiên cứu và áp dụng các kỹ thuật khai phá luật kết hợp (Association Rules Mining) trên dữ liệu bán lẻ thực tế. Chúng tôi đi sâu vào việc so sánh hiệu năng giữa hai thuật toán kinh điển **Apriori** và **FP-Growth**, đồng thời đề xuất các chiến lược kinh doanh dựa trên trọng số giá trị hóa đơn.
+> **Case Study:** Online Retail Dataset (UCI)  
+> **Chủ đề:** So sánh Apriori vs. FP-Growth & Đột phá tư duy với High-Utility Mining  
+> **Thực hiện bởi:** Nhóm 3 - WL (Win for Life)
 
+## 👥 Thông tin Nhóm
+| Vai trò | Thành viên | 
+| :--- | :--- | 
+| **Leader** | [Nguyễn Văn Vinh] | 
+| **Member** | [Bạch Ngọc Lương] |
+| **Member** | [Đỗ Văn Vinh] | 
+| **Member** | [Lại Thành Đoàn] | 
 ---
 
 ## 📑 Mục lục
@@ -42,7 +52,63 @@ Qua thực nghiệm thực tế trên tập dữ liệu 18,021 hóa đơn, chún
 
 
 ---
+## ⚔️ Thực nghiệm 1: Apriori vs FP-Growth
 
+Chúng tôi đã kiểm tra độ nhạy tham số của hai thuật toán bằng cách giảm dần ngưỡng `min_support`.
+
+### Kết quả hiệu năng:
+| Ngưỡng Support | Apriori Time | FP-Growth Time | Kết luận |
+| :--- | :--- | :--- | :--- |
+| **2.0%** | ~1.65s | ~6.93s | Apriori nhanh hơn ở tập dữ liệu thưa. |
+| **1.0%** | 68.44s | **52.45s** | FP-Growth bắt đầu vượt trội. |
+| **0.6%** | **CRASHED** ❌ | **RUNNING** ✅ | Apriori gặp lỗi `MemoryError` (>15GB RAM). |
+
+**Nhận xét:** Apriori không có khả năng mở rộng (non-scalable) khi cần đào sâu vào dữ liệu (support thấp) do bùng nổ tổ hợp ứng viên. FP-Growth với cấu trúc cây nén là lựa chọn bắt buộc cho Big Data.
+
+---
+
+## 💎 Thực nghiệm 2: High-Utility Mining (Advanced)
+
+> *Đây là phần mở rộng nâng cao nhằm tối ưu hóa theo Lợi nhuận (Utility) thay vì Tần suất (Support).*
+
+### Vấn đề của phương pháp truyền thống
+Các thuật toán như FP-Growth thường bỏ qua các sản phẩm giá trị cao nhưng ít người mua (Support thấp).
+
+### Kết quả đối chứng (Mindset Shift)
+Chúng tôi đã tìm ra sự khác biệt lớn giữa Top sản phẩm bán chạy (Frequent) và Top sản phẩm lợi nhuận (High-Utility):
+
+![Comparison Chart](chart_utility_vs_support.png)
+*(Biểu đồ Scatter Plot cho thấy vùng "Hidden Gems" - nơi Support thấp nhưng Utility cực cao)*
+
+| Xếp hạng | Top Tần Suất (Support) | Top Giá Trị (Utility) | Ý nghĩa |
+| :--- | :--- | :--- | :--- |
+| **#1** | *White Hanging Heart T-Light* | **DOTCOM POSTAGE** | Doanh thu Online (Phí ship) là nguồn thu khổng lồ. |
+| **#2** | *Regency Cakestand 3 Tier* | **Jumbo Bag + Postage** | Combo túi cỡ lớn + Ship đi tỉnh. |
+| **#3** | *Jumbo Bag Red Retrospot* | **Regency Cakestand 3 Tier** | Sản phẩm "Ngôi sao" toàn diện. |
+| **#4** | *Party Bunting* | **Jam Making Set (Support 1.6%)** | **Mỏ vàng bị bỏ quên!** |
+
+### Phát hiện đắt giá: "Jam Making Set"
+* **Support:** `0.016` (1.6%) -> *Sẽ bị Apriori loại bỏ vì < 2%.*
+* **Utility:** `~$141,646` -> *Top 5 Doanh thu toàn công ty.*
+👉 **Kết luận:** High-Utility Mining giúp doanh nghiệp không bỏ lỡ các dòng tiền ẩn từ nhóm khách hàng ngách (Niche Market).
+
+---
+
+## 💡 Insight Kinh doanh & Chiến lược
+
+Dựa trên kết quả khai phá dữ liệu, Nhóm 3 đề xuất:
+
+1.  **Chiến lược "Phí ship thông minh":**
+    * Dữ liệu cho thấy `DOTCOM POSTAGE` đi kèm với các đơn hàng giá trị cực lớn.
+    * **Hành động:** Miễn phí vận chuyển cho các đơn hàng chứa *Jumbo Bag* hoặc *Jam Making Set* để kích cầu nhóm khách hàng sỉ này.
+
+2.  **Khai thác "Ngôi sao" Regency Cakestand:**
+    * Đây là sản phẩm duy nhất vừa bán chạy vừa lãi cao.
+    * **Hành động:** Sử dụng nó làm sản phẩm trung tâm (Hub) để bán chéo (Cross-sell) các loại trà cao cấp (*Teacup*).
+
+3.  **Tái cấu trúc danh mục:**
+    * Tạo danh mục *"Hidden Treasures"* trên website dành riêng cho các sản phẩm có Support thấp nhưng Utility cao (như bộ làm mứt) để tăng khả năng hiển thị.
+    
 ## 💎 Đánh giá Luật theo Giá trị Kinh doanh
 [cite_start]Không chỉ dừng lại ở các chỉ số đếm thông thường, dự án tập trung vào **Chủ đề 3: Đánh giá dựa trên Lift và Trọng số**[cite: 253]:
 
