@@ -1,183 +1,77 @@
-# Shopping Cart Analysis
+# 🛒 Market Basket Analysis: Advanced Association Rules Mining
 
-Phân tích dữ liệu bán lẻ nhằm khám phá mối quan hệ giữa các sản phẩm thường được mua cùng nhau bằng các kỹ thuật **Association Rule Mining** như **Apriori** và **FP-Growth**.  
-Project triển khai pipeline đầy đủ từ xử lý dữ liệu → khai thác luật → so sánh thuật toán → trực quan hóa kết quả.
+![Data Mining](https://img.shields.io/badge/Domain-Data%20Mining-blue)
+![Python](https://img.shields.io/badge/Python-3.9+-green)
+![Algorithm](https://img.shields.io/badge/Algorithm-FP--Growth%20%26%20Apriori-orange)
 
----
-
-## Features
-
-- Làm sạch dữ liệu & xử lý giao dịch lỗi
-- Xây dựng basket matrix (transaction × product)
-- Khai thác tập mục phổ biến (Frequent Itemsets)
-- Sinh luật kết hợp (Association Rules)
-- Hỗ trợ 2 thuật toán:
-  - Apriori
-  - FP-Growth
-- So sánh Apriori vs FP-Growth
-- Các chỉ số đánh giá:
-  - Support
-  - Confidence
-  - Lift
-- Trực quan hóa với:
-  - Bar chart
-  - Scatter plot
-  - Network graph
-  - Biểu đồ tương tác Plotly
-- Tự động hóa pipeline bằng **Papermill**
-- Dashboard tương tác bằng **Streamlit**
+Dự án này tập trung vào việc nghiên cứu và áp dụng các kỹ thuật khai phá luật kết hợp (Association Rules Mining) trên dữ liệu bán lẻ thực tế. Chúng tôi đi sâu vào việc so sánh hiệu năng giữa hai thuật toán kinh điển **Apriori** và **FP-Growth**, đồng thời đề xuất các chiến lược kinh doanh dựa trên trọng số giá trị hóa đơn.
 
 ---
 
-## Project Structure
-
-```text
-shopping_cart_advanced_analysis/
-├── data/
-│   ├── raw/
-│   │   └── online_retail.csv
-│   └── processed/
-│       ├── cleaned_uk_data.csv
-│       ├── basket_bool.parquet
-│       ├── rules_apriori_filtered.csv
-│       └── rules_fpgrowth_filtered.csv
-│
-├── notebooks/
-│   ├── preprocessing_and_eda.ipynb
-│   ├── basket_preparation.ipynb
-│   ├── apriori_modelling.ipynb
-│   ├── fp_growth_modelling.ipynb
-│   ├── compare_apriori_fpgrowth.ipynb
-│   └── runs/
-│       ├── preprocessing_and_eda_run.ipynb
-│       ├── basket_preparation_run.ipynb
-│       ├── apriori_modelling_run.ipynb
-│       ├── fp_growth_modelling_run.ipynb
-│       └── compare_apriori_fpgrowth_run.ipynb
-│
-├── src/
-│   └── apriori_library.py
-│
-├── dashboard/
-│   ├── app.py
-│   └── requirements.txt
-│
-├── run_papermill.py
-├── requirements.txt
-└── README.md
-```
+## 📑 Mục lục
+1. [Giới thiệu Pipeline](#giới-thiệu-pipeline)
+2. [Thực nghiệm & So sánh Hiệu năng](#thực-nghiệm--so-sánh-hiệu-năng)
+3. [Đánh giá Luật theo Giá trị Kinh doanh](#đánh-giá-luật-theo-giá-trị-kinh-doanh)
+4. [Trực quan hóa Nâng cao](#trực-quan-hóa-nâng-cao)
+5. [Hướng dẫn Cài đặt](#hướng dẫn-cài-đặt)
 
 ---
 
-## Installation
+## 🚀 Giới thiệu Pipeline
+[cite_start]Dự án được tổ chức theo quy trình chuẩn hóa giúp đảm bảo tính tái sử dụng cao[cite: 20, 21]:
 
+1.  [cite_start]**Data Cleaning**: Xử lý giá trị thiếu, loại bỏ các đơn hàng bị hủy (`C` prefix trong Invoice) để đảm bảo dữ liệu sạch[cite: 45].
+2.  [cite_start]**Basket Preparation**: Chuyển đổi dữ liệu giao dịch sang ma trận giỏ hàng Boolean (Basket Matrix) lưu dưới dạng `.parquet` để tối ưu dung lượng[cite: 46, 53].
+3.  [cite_start]**Mining Engine**: Triển khai song song `AssociationRulesMiner` (Apriori) và `FPGrowthMiner` (FP-Growth)[cite: 23].
+4.  [cite_start]**Validation & Export**: Lọc luật dựa trên các ngưỡng `min_support`, `min_confidence`, và `min_lift` tối ưu, sau đó lưu kết quả ra file `.csv`[cite: 25, 89].
+
+---
+
+## ⚖️ Thực nghiệm & So sánh Hiệu năng (Q2)
+Qua thực nghiệm thực tế trên tập dữ liệu 18,021 hóa đơn, chúng tôi rút ra các nhận định quan trọng về độ nhạy tham số:
+
+| Ngưỡng Support | Apriori Time | FP-Growth Time | Trạng thái |
+| :--- | :--- | :--- | :--- |
+| **0.02 (2%)** | ~1.65 giây | ~6.93 giây | Apriori nhanh hơn ở ngưỡng cao. |
+| **0.01 (1%)** | **68.44 giây** | **52.45 giây** | FP-Growth bắt đầu vượt trội. |
+| **0.008 (0.8%)** | 251.11 giây | 134.97 giây | Sự chênh lệch hiệu năng rõ rệt. |
+| **0.006 (0.6%)** | **FAILED** | **OK** | Apriori lỗi `MemoryError` (Yêu cầu >15GB RAM). |
+
+[cite_start]**Kết luận**: FP-Growth là giải pháp tối ưu cho "mẫu đuôi dài" (long-tail patterns) - những luật có support thấp nhưng mang lại giá trị insight sâu sắc[cite: 77, 95].
+
+
+
+---
+
+## 💎 Đánh giá Luật theo Giá trị Kinh doanh
+[cite_start]Không chỉ dừng lại ở các chỉ số đếm thông thường, dự án tập trung vào **Chủ đề 3: Đánh giá dựa trên Lift và Trọng số**[cite: 253]:
+
+### 1. Phân loại theo Ma trận BCG (BCG Matrix)
+Chúng tôi phân loại các luật kết hợp thành 4 nhóm chiến lược:
+* **Stars (Sao)**: Support & Lift đều cao. Đây là các combo chủ lực, cần trưng bày ở khu vực trung tâm cửa hàng.
+* **Cash Cows (Bò sữa)**: Support cao nhưng Lift vừa phải. Đây là các sản phẩm thiết yếu, mang lại dòng tiền ổn định.
+* **Question Marks (Dấu hỏi)**: Lift cực cao nhưng Support thấp. Đây là các sản phẩm "ngách" đắt tiền, tiềm năng lớn cho Cross-selling.
+
+### 2. Trọng số Doanh thu (Weighted Support)
+[cite_start]Thay vì đếm số lần xuất hiện, chúng tôi gán trọng số dựa trên `InvoiceValue`[cite: 183, 194]. 
+* [cite_start]**Insight**: Một số luật có tần suất xuất hiện thấp nhưng lại chủ yếu nằm trong các hóa đơn giá trị cao, xứng đáng được ưu tiên trong các chiến dịch Marketing dành cho khách hàng VIP[cite: 188, 263].
+
+---
+
+## 📊 Trực quan hóa Nâng cao
+Sử dụng bộ công cụ `DataVisualizer` để tạo ra các báo cáo tương tác:
+* **Sunburst Chart**: Phân cấp hành vi mua sắm từ sản phẩm chính đến sản phẩm đi kèm.
+* **Parallel Coordinates**: So sánh đa chiều các chỉ số Support, Confidence, Lift và Leverage để tìm ra "điểm ngọt" của luật kết hợp.
+* **Network Graph**: Trực quan hóa mối liên hệ giữa các sản phẩm dưới dạng mạng lưới thần kinh, giúp tối ưu hóa sơ đồ mặt bằng cửa hàng.
+
+
+
+---
+
+## 🛠 Hướng dẫn Cài đặt
+
+### Yêu cầu hệ thống
+* Python 3.9+
+* Cài đặt các thư viện cần thiết:
 ```bash
-git clone <your_repo_url>
-cd shopping_cart_advanced_analysis
-conda create -n shopping_env python=3.11
-conda activate shopping_env
 pip install -r requirements.txt
-```
-
-Data Preparation
-Đặt file gốc tại:
-
-```bash
-data/raw/online_retail.csv
-```
-File output sẽ được sinh tự động vào:
-
-```bash
-data/processed/
-```
-
-Run Pipeline (Recommended)
-Chạy toàn bộ phân tích chỉ với 1 lệnh:
-
-```bash
-python run_papermill.py
-```
-Kết quả sinh ra:
-
-```bash
-data/processed/
-├── cleaned_uk_data.csv
-├── basket_bool.parquet
-├── rules_apriori_filtered.csv
-└── rules_fpgrowth_filtered.csv
-
-notebooks/runs/
-├── preprocessing_and_eda_run.ipynb
-├── basket_preparation_run.ipynb
-├── apriori_modelling_run.ipynb
-├── fp_growth_modelling_run.ipynb
-└── compare_apriori_fpgrowth_run.ipynb
-```
-
-### Changing Parameters
-Các tham số có thể chỉnh trong `run_papermill.py` hoặc trong cell `PARAMETERS` của mỗi notebook:
-
-```python
-MIN_SUPPORT=0.01
-MAX_LEN=3
-FILTER_MIN_CONF=0.3
-FILTER_MIN_LIFT=1.2
-```
-Papermill cho phép chạy pipeline với cấu hình khác nhau mà không cần sửa notebook gốc.
-
-### Visualization & Results
-Các notebook modelling hiển thị các biểu đồ:
-
-Top luật theo Lift
-
-Top luật theo Confidence
-
-Scatter Support – Confidence – Lift
-
-Network graph giữa các sản phẩm
-
-Biểu đồ Plotly tương tác
-
-Có thể export notebook kết quả sang HTML:
-
-```bash
-jupyter nbconvert notebooks/runs/priori_modelling_run.ipynb --to html
-```
-
-### Ứng dụng thực tế
-Product recommendation
-
-Cross-selling strategy
-
-Combo gợi ý sản phẩm
-
-Phân tích hành vi mua hàng
-
-Sắp xếp sản phẩm tại siêu thị
-
-### Tech Stack
-
-| Công nghệ | Mục đích |
-|----------|----------|
-| Python | Ngôn ngữ chính |
-| Pandas | Xử lý dữ liệu transaction |
-| MLxtend | Apriori / FP-Growth association rules |
-| Papermill | Chạy pipeline notebook tự động |
-| Matplotlib & Seaborn | Visualization biểu đồ tĩnh |
-| Plotly | Dashboard / biểu đồ tương tác |
-| Jupyter Notebook | Môi trường notebook |
-
-### Roadmap
-Streamlit dashboard
-
-Weighted association rules
-
-Correlation-aware rule ranking
-
-
-### Author
-Project được thực hiện bởi:
-Trang Le
-
-📄 License
-MIT — sử dụng tự do cho nghiên cứu, học thuật và ứng dụng nội bộ.
