@@ -10,7 +10,7 @@
 --
 Dự án này thực hiện phân tích giỏ hàng (Market Basket Analysis) trên bộ dữ liệu bán lẻ thực tế (**UK Online Retail**). Điểm nhấn của dự án là sự chuyển dịch tư duy từ **Khai phá tập phổ biến (Frequent Itemset Mining)** truyền thống sang **Khai phá tập giá trị cao (High-Utility Itemset Mining - HUIM)** để tối ưu hóa doanh thu thực tế.
 > **Case Study:** Online Retail Dataset (UCI)  
-> **Chủ đề:** So sánh Apriori vs. FP-Growth & Đột phá tư duy với High-Utility Mining  
+> **Chủ đề:** Chủ đề 7: Luật “niche’ ’ có trọng số (Hiếm nhưng giá trị cao)
 > **Thực hiện bởi:** Nhóm 3 - WL (Win for Life)
 
 ## 👥 Thông tin Nhóm
