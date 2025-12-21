@@ -1,31 +1,116 @@
 # Shopping Cart Analysis
 
-Phân tích dữ liệu bán lẻ nhằm khám phá mối quan hệ giữa các sản phẩm thường được mua cùng nhau bằng các kỹ thuật **Association Rule Mining** như **Apriori** và **FP-Growth**.  
-Project triển khai pipeline đầy đủ từ xử lý dữ liệu → khai thác luật → so sánh thuật toán → trực quan hóa kết quả.
+Khám phá hành vi mua sắm của khách hàng trong cửa hàng bán lẻ: sản phẩm nào thường được mua cùng nhau, và làm thế nào để từ dữ liệu đó rút ra chiến lược kinh doanh hữu ích.  
+Chúng tôi sử dụng **Apriori** và **FP-Growth** – hai thuật toán phổ biến trong **Association Rule Mining** – để tìm các luật kết hợp sản phẩm.
 
 ---
 
-## Features
+## 👥 Thông tin Nhóm
 
-- Làm sạch dữ liệu & xử lý giao dịch lỗi
-- Xây dựng basket matrix (transaction × product)
-- Khai thác tập mục phổ biến (Frequent Itemsets)
-- Sinh luật kết hợp (Association Rules)
-- Hỗ trợ 2 thuật toán:
-  - Apriori
-  - FP-Growth
-- So sánh Apriori vs FP-Growth
-- Các chỉ số đánh giá:
-  - Support
-  - Confidence
-  - Lift
-- Trực quan hóa với:
-  - Bar chart
-  - Scatter plot
-  - Network graph
-  - Biểu đồ tương tác Plotly
-- Tự động hóa pipeline bằng **Papermill**
-- Dashboard tương tác bằng **Streamlit**
+- **Nhóm:** Nhóm 9
+- **Thành viên:**
+  - Trần Trường Giang
+  - Lưu Khoa Bằng
+  - Nguyễn Đức Dương
+- **Chủ đề:** **5.3.2.4 – Phân tích độ nhạy tham số với và không có trọng số (Parameter Sensitivity)**
+  - Thực nghiệm nhiều giá trị **min_support, min_confidence, min_lift** cho:
+    - Luật thường
+    - Luật có trọng số (ví dụ: min_weighted_support, min_weighted_lift)
+  - Quan sát sự thay đổi về:
+    1. Số lượng luật
+    2. Cấu trúc / cụm sản phẩm chính
+    3. Sự xuất hiện hoặc biến mất của các luật có giá trị kinh doanh cao
+  - Rút ra “ngưỡng hợp lý” cho cả hai trường hợp:
+    - Khi mục tiêu là khai thác hành vi mua phổ biến
+    - Khi mục tiêu là tối đa hóa giá trị/doanh thu
+- **Dataset:** Online Retail (UCI Machine Learning Repository)
+
+
+---
+
+## Mục tiêu:
+
+- Hiểu hành vi mua hàng của khách.
+- Khai thác **các cặp/mẫu sản phẩm thường đi cùng nhau**.
+- Hỗ trợ quyết định: **cross-selling**, combo sản phẩm, trưng bày tại cửa hàng.
+
+Dữ liệu được lưu trong:
+
+- `data/raw/online_retail.csv` — file gốc không chỉnh sửa.
+- `data/processed/` — chứa dữ liệu làm sạch, basket matrix và luật kết hợp.
+
+---
+
+## Pipeline: từ dữ liệu đến insight
+
+Quy trình được thiết kế theo **pipeline tự động** với Papermill:
+
+1. **Tiền xử lý & EDA**
+   - Làm sạch dữ liệu: loại bỏ hóa đơn hủy, giá trị không hợp lệ.  
+   - Khám phá đặc điểm mua sắm: số lượng sản phẩm mỗi hóa đơn, tần suất mua theo quốc gia.
+
+2. **Chuẩn bị basket matrix**
+   - Mỗi hóa đơn là một dòng, mỗi sản phẩm là một cột.  
+   - Dữ liệu Boolean: 1 nếu khách mua sản phẩm, 0 nếu không.
+
+3. **Khai phá luật bằng Apriori & FP-Growth**
+   - Sinh tập mục phổ biến (frequent itemsets).  
+   - Tạo luật kết hợp với **support, confidence, lift**.  
+   - Lọc các luật mạnh theo ngưỡng để tập trung vào các mối liên kết quan trọng.
+
+4. **So sánh thuật toán**
+   - Hai thuật toán tạo cùng số lượng tập mục phổ biến và luật.  
+   - Điểm khác biệt chính là **hiệu năng**:
+     - MIN_SUPPORT cao → Apriori nhanh hơn.  
+     - MIN_SUPPORT thấp → FP-Growth mở rộng tốt hơn với dữ liệu lớn.
+
+5. **Trực quan hóa & insight**
+   - **Bar chart:** top luật theo Lift.
+  <img width="1000" height="600" alt="image" src="https://github.com/user-attachments/assets/6e555b6b-7ddd-4707-82c2-e3b2a47c6478" />
+   - **Scatter plot:** Support vs Confidence.
+<img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/db505e78-716a-4e02-8c14-3e2706cc7e77" />
+   - **Box plot:** phân bố Lift.  
+ <img width="800" height="600" alt="image" src="https://github.com/user-attachments/assets/a9414f7f-e61f-4ea6-8b64-38909b5523a6" />
+
+---
+
+## Kết quả chính & insight kinh doanh
+
+1. **Combo sản phẩm Herb Marker**  
+   - {Parsley, Rosemary} → Thyme (Confidence ~95%, Lift ~74)  
+   - **Ứng dụng:** tạo combo 3 sản phẩm, khuyến mại nhẹ để tăng giá trị đơn hàng.
+
+2. **Mint là sản phẩm kích hoạt**  
+   - Khi khách chọn Mint, họ tiếp tục mua các Herb Marker khác.  
+   - **Ứng dụng:** đặt Mint ở vị trí dễ thấy, gợi ý sản phẩm liên quan.
+
+3. **Mua theo bộ**  
+   - Khách hiếm khi mua lẻ một Herb Marker, thường mua 2–3 sản phẩm cùng lúc.  
+   - **Ứng dụng:** trưng bày các Herb Marker liền nhau, thiết kế kệ “Herb Set”.
+
+4. **Cặp bổ trợ mạnh**  
+   - Chives → Parsley (Confidence ~92%, Lift ~72).  
+   - **Ứng dụng:** gợi ý Parsley khi khách chọn Chives, combo nhỏ 2 sản phẩm.
+
+5. **Quản lý tồn kho theo nhóm sản phẩm**  
+   - Nhóm Herb Marker: Mint – Basil – Rosemary – Parsley – Thyme.  
+   - Support ~1% nhưng Confidence & Lift cao, nên quản lý nhập – tồn đồng bộ.
+
+---
+
+## So sánh Apriori & FP-Growth
+
+| MIN_SUPPORT | Frequent Itemsets | Số luật | Thời gian chạy |
+|------------|-----------------|---------|----------------|
+| 0.03       | 145             | 21      | Apriori: 0.37s, FP-Growth: 2.66s |
+| 0.02       | 400             | 175     | Apriori: 2.35s, FP-Growth: 6.47s |
+| 0.01       | 2,120           | 1,794   | Apriori: 61.06s, FP-Growth: 48.05s |
+
+**Nhận xét:**
+
+- Hai thuật toán tạo cùng luật, chất lượng tương đương.  
+- FP-Growth ưu thế khi MIN_SUPPORT thấp và dữ liệu lớn.  
+- Apriori nhanh hơn với MIN_SUPPORT cao và dữ liệu nhỏ–trung bình.
 
 ---
 
@@ -37,6 +122,7 @@ shopping_cart_advanced_analysis/
 │   ├── raw/
 │   │   └── online_retail.csv
 │   └── processed/
+|       ├── charts/  
 │       ├── cleaned_uk_data.csv
 │       ├── basket_bool.parquet
 │       ├── rules_apriori_filtered.csv
@@ -53,7 +139,9 @@ shopping_cart_advanced_analysis/
 │       ├── basket_preparation_run.ipynb
 │       ├── apriori_modelling_run.ipynb
 │       ├── fp_growth_modelling_run.ipynb
+│       ├── parameter_sensitivity_analysis.ipynb
 │       └── compare_apriori_fpgrowth_run.ipynb
+│       └── visualize_rules.py
 │
 ├── src/
 │   └── apriori_library.py
@@ -67,113 +155,21 @@ shopping_cart_advanced_analysis/
 └── README.md
 ```
 
+## Tech Stack
+
+- Python, Pandas, MLxtend (Apriori/FP-Growth)  
+- Matplotlib, Seaborn, Plotly (visualization)  
+- Streamlit (dashboard)  
+- Papermill (pipeline tự động)  
+- Jupyter Notebook
+
 ---
 
-## Installation
+## Kết luận
 
-```bash
-git clone <your_repo_url>
-cd shopping_cart_advanced_analysis
-conda create -n shopping_env python=3.11
-conda activate shopping_env
-pip install -r requirements.txt
-```
-
-Data Preparation
-Đặt file gốc tại:
-
-```bash
-data/raw/online_retail.csv
-```
-File output sẽ được sinh tự động vào:
-
-```bash
-data/processed/
-```
-
-Run Pipeline (Recommended)
-Chạy toàn bộ phân tích chỉ với 1 lệnh:
-
-```bash
-python run_papermill.py
-```
-Kết quả sinh ra:
-
-```bash
-data/processed/
-├── cleaned_uk_data.csv
-├── basket_bool.parquet
-├── rules_apriori_filtered.csv
-└── rules_fpgrowth_filtered.csv
-
-notebooks/runs/
-├── preprocessing_and_eda_run.ipynb
-├── basket_preparation_run.ipynb
-├── apriori_modelling_run.ipynb
-├── fp_growth_modelling_run.ipynb
-└── compare_apriori_fpgrowth_run.ipynb
-```
-
-### Changing Parameters
-Các tham số có thể chỉnh trong `run_papermill.py` hoặc trong cell `PARAMETERS` của mỗi notebook:
-
-```python
-MIN_SUPPORT=0.01
-MAX_LEN=3
-FILTER_MIN_CONF=0.3
-FILTER_MIN_LIFT=1.2
-```
-Papermill cho phép chạy pipeline với cấu hình khác nhau mà không cần sửa notebook gốc.
-
-### Visualization & Results
-Các notebook modelling hiển thị các biểu đồ:
-
-Top luật theo Lift
-
-Top luật theo Confidence
-
-Scatter Support – Confidence – Lift
-
-Network graph giữa các sản phẩm
-
-Biểu đồ Plotly tương tác
-
-Có thể export notebook kết quả sang HTML:
-
-```bash
-jupyter nbconvert notebooks/runs/priori_modelling_run.ipynb --to html
-```
-
-### Ứng dụng thực tế
-Product recommendation
-
-Cross-selling strategy
-
-Combo gợi ý sản phẩm
-
-Phân tích hành vi mua hàng
-
-Sắp xếp sản phẩm tại siêu thị
-
-### Tech Stack
-
-| Công nghệ | Mục đích |
-|----------|----------|
-| Python | Ngôn ngữ chính |
-| Pandas | Xử lý dữ liệu transaction |
-| MLxtend | Apriori / FP-Growth association rules |
-| Papermill | Chạy pipeline notebook tự động |
-| Matplotlib & Seaborn | Visualization biểu đồ tĩnh |
-| Plotly | Dashboard / biểu đồ tương tác |
-| Jupyter Notebook | Môi trường notebook |
-
-### Roadmap
-Streamlit dashboard
-
-Weighted association rules
-
-Correlation-aware rule ranking
-
+- **Apriori & FP-Growth** đều hiệu quả về mặt lý thuyết.  
+- **Chất lượng luật** phản ánh thói quen mua kèm của khách hàng, hữu ích cho **cross-selling và combo sản phẩm**.  
+- **FP-Growth** ưu thế hơn với dữ liệu lớn và ngưỡng support thấp.
 
 ### Author
 Project được thực hiện bởi:
