@@ -23,11 +23,11 @@ Dự án này thực hiện phân tích giỏ hàng (Market Basket Analysis) tr�
 ---
 
 ## 📑 Mục lục
-1. [Giới thiệu](#1 giới-thiệu)
+1. [Giới thiệu](#giới-thiệu)
 2. [Kế hoạch thực nghiệm & mỏ ngọc ẩn](#kế-hoạch-thực-nghiệm-&-mỏ-ngọc-ẩn)
 3. [Kết luận và đề xuất chiến lược kinh doanh](#kết-luận-và-đề-xuất-chiến-lược-kinh-doanh)
 ---
-# 1 Giới thiệu
+# 1 Giới thiệu<a name="giới-thiệu"></a>
 ## Cuộc chiến Apriori & FP-Growth
 
 Dự án áp dụng mô hình so sánh giữa phương pháp truyền thống và phương pháp hiện đại để làm nổi bật hiệu quả xử lý dữ liệu lớn.
@@ -157,7 +157,7 @@ Chúng tôi áp dụng quy trình **Hybrid Approach**:
             $Utility = \sum (Quantity \times UnitPrice)$.
 4.  **Xếp hạng:** So sánh Top Frequent vs. Top Utility.
 ---
-# 2. Kế hoạch thực nghiệm & mỏ ngọc ẩn
+# 2. Kế hoạch thực nghiệm & mỏ ngọc ẩn<a name="kế-hoạch-thực-nghiệm-&-mỏ-ngọc-ẩn"></a>
 ## Cuộc đua hiệu năng
 ## ⚖️ Thực nghiệm & So sánh Hiệu năng (Q2)
 Qua thực nghiệm thực tế trên tập dữ liệu 18,021 hóa đơn, chúng tôi rút ra các nhận định quan trọng về độ nhạy tham số:
@@ -330,7 +330,7 @@ Dựa trên kết quả khai phá dữ liệu, Nhóm 3 đề xuất:
     * Đào tạo nhân viên bán hàng: Khi khách chọn `TEA SET`, bắt buộc gợi ý thêm `SUGAR BOWL` vì dữ liệu chứng minh tỉ lệ thành công cực cao.
 
 ---
-#  3. KẾT LUẬN VÀ ĐỀ XUẤT CHIẾN LƯỢC KINH DOANH
+#  3. KẾT LUẬN VÀ ĐỀ XUẤT CHIẾN LƯỢC KINH DOANH<a name="kết-luận-và-đề-xuất-chiến-lược-kinh-doanh"></a>
 
 Nghiên cứu này không chỉ dừng lại ở việc tìm ra các tập mục phổ biến mà còn đi sâu vào giá trị kinh tế thực tế, giúp chuyển đổi dữ liệu thô thành lợi nhuận chiến lược thông qua thuật toán **High-Utility Itemset Mining (HUIM)**.
 
