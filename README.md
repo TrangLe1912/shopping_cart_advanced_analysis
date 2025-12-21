@@ -144,7 +144,7 @@ Có một món tên là **"Bộ Làm Mứt" (Jam Making Set)**. Cả tháng mớ
 ---
 
 ### 🎯 3. Tóm lại là...
-Dự án của Nhóm 3 giống như việc chuyển từ **bán trà đá** (lấy số lượng bù chất lượng) sang **bán đá quý** (bán ít nhưng ăn dày).
+Dự án của này giống như việc chuyển từ **bán trà đá** (lấy số lượng bù chất lượng) sang **bán đá quý** (bán ít nhưng ăn dày).
 
 **Mục tiêu:** Giúp doanh nghiệp không bị đánh lừa bởi những con số ảo, tìm ra đúng những khách hàng *"ít nói mà làm sướng cái bụng"* để chăm sóc tận răng!
 
