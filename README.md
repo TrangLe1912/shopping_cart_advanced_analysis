@@ -10,7 +10,6 @@ Chúng tôi sử dụng **Apriori** và **FP-Growth** – hai thuật toán ph�
 - **Nhóm:** Nhóm 9
 - **Thành viên:**
   - Trần Trường Giang
-  - Lưu Khoa Bằng
   - Nguyễn Đức Dương
 - **Chủ đề:** **5.3.2.4 – Phân tích độ nhạy tham số với và không có trọng số (Parameter Sensitivity)**
   - Thực nghiệm nhiều giá trị **min_support, min_confidence, min_lift** cho:
