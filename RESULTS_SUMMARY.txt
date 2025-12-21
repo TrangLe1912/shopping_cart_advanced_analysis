@@ -1,0 +1,44 @@
+## 📊 KẾT QUẢ THỰC NGHIỆM NOTEBOOK
+
+### Dữ Liệu Dataset
+```
+Số hoá đơn: 18,021
+Số sản phẩm: 4,007
+Sparsity: 0.66% (rất SPARSE)
+Data size: 68.87 MB
+```
+
+### Kết Quả Min_Support: [0.05, 0.04, 0.03, 0.02]
+
+| Min Support | Itemsets | Rules | Apriori (s) | FP-Growth (s) | Speedup |
+|-------------|----------|-------|------------|---------------|---------|
+| 0.05        | 34       | 0     | 0.089      | 2.623         | 0.034x  |
+| 0.04        | 66       | 2     | 0.156      | 2.826         | 0.055x  |
+| 0.03        | 145      | 22    | 0.383      | 3.362         | 0.114x  |
+| 0.02        | 400      | 218   | 1.764      | 7.431         | 0.237x  |
+
+### 🔥 PHÁT HIỆN CHÍNH
+
+❌ **Apriori NHANH HƠN FP-Growth** (Ngược lại lý thuyết!)
+- Min_support 0.05: Apriori nhanh ~30x
+- Min_support 0.02: Apriori nhanh ~4x
+
+✅ **Chất Lượng Luật GIỐNG NHAU**
+- Cùng số rules: 218
+- Support trung bình: 0.0246
+- Confidence trung bình: 0.4529
+- Lift trung bình: 8.29 (rất cao = strong associations)
+- Max Lift: 27.2
+
+### Lý Giải
+
+Tại sao Apriori nhanh hơn?
+1. **Dataset SPARSE (0.66%)** → Ít frequent itemsets → Apriori hiệu quả
+2. **FP-Tree overhead** → Xây dựng tree tốn thời gian
+3. **Mlxtend implementation** → Apriori được tối ưu hóa tốt
+
+### Khuyến Nghị
+
+**Cho dataset này → DÙNG APRIORI** (nhanh gấp 4-30x)
+
+✅ File PARAMETER_SENSITIVITY_ANALYSIS.md đã cập nhật kết quả thực tế!
