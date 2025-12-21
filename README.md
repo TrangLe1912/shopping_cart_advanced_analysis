@@ -23,9 +23,9 @@ Dự án này thực hiện phân tích giỏ hàng (Market Basket Analysis) tr�
 ---
 
 ## 📑 Mục lục
-1. [Giới thiệu](#giới-thiệu)
+1. [Giới thiệu](#1 giới-thiệu)
 2. [Kế hoạch thực nghiệm & mỏ ngọc ẩn](#kế-hoạch-thực-nghiệm-&-mỏ-ngọc-ẩn)
-3. [KẾT LUẬN VÀ ĐỀ XUẤT CHIẾN LƯỢC KINH DOANH](#kết-luận-và-đề-xuất-chiến-lược-kinh-doanh)
+3. [Kết luận và đề xuất chiến lược kinh doanh](#kết-luận-và-đề-xuất-chiến-lược-kinh-doanh)
 ---
 # 1 Giới thiệu
 ## Cuộc chiến Apriori & FP-Growth
