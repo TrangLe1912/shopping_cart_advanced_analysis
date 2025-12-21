@@ -4,9 +4,9 @@ Phân tích dữ liệu bán lẻ nhằm khám phá mối quan hệ giữa các 
 Project triển khai pipeline đầy đủ từ xử lý dữ liệu → khai thác luật → so sánh thuật toán → trực quan hóa kết quả.
 
 Thành viên:
-1671040025 Nguyễn Trung Thành
-1771040010 Nguyễn Văn Hải
-1771040011 Bế Quang Hải
+- 1671040025 Nguyễn Trung Thành
+- 1771040010 Nguyễn Văn Hải
+- 1771040011 Bế Quang Hải
 
 
 ---
