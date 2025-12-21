@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Phân Tích Dữ Liệu Bán Lẻ | Nhóm 3</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- CẤU HÌNH GIAO DIỆN --- */
+        :root {
+            --primary: #2563EB;
+            --secondary: #1E293B;
+            --bg-light: #F8FAFC;
+            --text-dark: #334155;
+            --star: #10B981;
+            --gem: #EF4444;
+            --cow: #F59E0B;
+            --dog: #94A3B8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--text-dark); background-color: var(--bg-light); }
+        
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; } /* Tăng chiều rộng để chart nét hơn */
+        .section { padding: 60px 0; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+
+        /* --- CẤU HÌNH KHUNG BIỂU ĐỒ (QUAN TRỌNG) --- */
+        .chart-wrapper {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #E2E8F0;
+            overflow: hidden;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Iframe full kích thước wrapper */
+        iframe.chart-frame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* --- HEADER --- */
+        .hero {
+            background: linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+        }
+        .badges span {
+            background: rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 20px; 
+            font-size: 0.85rem; margin: 0 5px; border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* --- TABLES & TAGS --- */
+        .strategy-table { width: 100%; border-collapse: collapse; margin-top: 10px; background: white; border-radius: 8px; }
+        .strategy-table th, .strategy-table td { padding: 12px 15px; text-align: left; border-bottom: 1px solid #E2E8F0; font-size: 0.95rem; }
+        .tag { padding: 4px 10px; border-radius: 6px; font-weight: 600; font-size: 0.75rem; color: white; display: inline-block; min-width: 80px; text-align: center; }
+        .tag.star { background: var(--star); }
+        .tag.gem { background: var(--gem); }
+        .tag.cow { background: var(--cow); }
+        .tag.dog { background: var(--dog); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .chart-wrapper { height: 400px !important; } /* Mobile chart height */
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <div class="container">
+            <div class="badges">
+                <span>NHÓM 3</span>
+                <span>Khai Phá Dữ Liệu</span>
+                <span>2025</span>
+            </div>
+            <h1 style="font-size: 2.5rem; margin: 20px 0;">BÁO CÁO PHÂN TÍCH DOANH THU BÁN LẺ</h1>
+            <p style="opacity: 0.8;">Ứng dụng thuật toán FP-Growth & Weighted Rules để tối ưu chiến lược sản phẩm</p>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <h2 style="margin-bottom: 10px; border-left: 5px solid var(--primary); padding-left: 15px;">1. Cấu Trúc Dòng Tiền (Sunburst Chart)</h2>
+            <p style="margin-bottom: 30px; color: #64748B;">Biểu đồ thể hiện các nhóm sản phẩm đóng góp nhiều nhất vào doanh thu. Vòng trong là sản phẩm chính, vòng ngoài là sản phẩm mua kèm.</p>
+            
+            <div class="grid-2">
+                <div class="chart-wrapper" style="height: 700px;">
+                    <iframe src="chart_sunburst.html" class="chart-frame"></iframe>
+                </div>
+                
+                <div style="padding-top: 20px;">
+                    <div class="card">
+                        <h3 style="margin-bottom: 15px;"><i class="fa-solid fa-lightbulb" style="color: var(--accent);"></i> Insight Chính</h3>
+                        <ul style="padding-left: 20px; line-height: 1.8;">
+                            <li><strong>Cụm sản phẩm chủ lực:</strong> Nhóm <em>Teapot, Cake Stand</em> chiếm tỷ trọng lớn nhất ở trung tâm biểu đồ.</li>
+                            <li><strong>Hành vi khách hàng:</strong> Khách hàng có xu hướng mua trọn bộ sưu tập (Collection) thay vì mua lẻ.</li>
+                            <li><strong>Màu sắc:</strong> Các vùng màu đỏ/cam đậm thể hiện hiệu quả tài chính cao (Weighted Support lớn).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: white;">
+        <div class="container">
+            <h2 style="margin-bottom: 10px; border-left: 5px solid var(--primary); padding-left: 15px;">2. Phân Tích Đa Chiều (Parallel Coordinates)</h2>
+            <p style="margin-bottom: 30px; color: #64748B;">So sánh các chỉ số của luật kết hợp trên cùng một hệ trục tọa độ.</p>
+
+            <div class="chart-wrapper" style="height: 600px;">
+                <iframe src="chart_parallel.html" class="chart-frame"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <h2 style="margin-bottom: 10px; border-left: 5px solid var(--primary); padding-left: 15px;">3. Ma Trận Chiến Lược (BCG Matrix)</h2>
+            <p style="margin-bottom: 30px; color: #64748B;">Phân loại sản phẩm dựa trên Tần suất (X) và Giá trị Kinh tế (Y).</p>
+            
+            <div class="grid-2">
+                <div class="chart-wrapper" style="height: 650px;">
+                    <iframe src="chart_bcg_matrix.html" class="chart-frame"></iframe>
+                </div>
+
+                <div>
+                    <h3 style="margin-bottom: 15px;">Phân Loại Chiến Lược</h3>
+                    <table class="strategy-table">
+                        <thead>
+                            <tr style="background: #F8FAFC;">
+                                <th>Nhóm</th>
+                                <th>Đặc điểm</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="tag star">STARS ⭐</span></td>
+                                <td>Bán chạy & Đắt</td>
+                                <td>Quảng cáo mạnh, giữ tồn kho</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag gem">GEMS 💎</span></td>
+                                <td>Ít mua & Cực đắt</td>
+                                <td><strong>Cross-sell cho VIP</strong></td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag cow">COWS 🐄</span></td>
+                                <td>Bán chạy & Rẻ</td>
+                                <td>Gợi ý tự động tại Checkout</td>
+                            </tr>
+                            <tr>
+                                <td><span class="tag dog">DOGS 🐕</span></td>
+                                <td>Ít mua & Rẻ</td>
+                                <td>Cắt giảm / Loại bỏ</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background: white;">
+        <div class="container">
+            <h2 style="margin-bottom: 10px; border-left: 5px solid var(--primary); padding-left: 15px;">4. Mạng Lưới Sản Phẩm (Network Graph)</h2>
+            <p style="margin-bottom: 30px; color: #64748B;">Trực quan hóa mối quan hệ liên kết giữa các sản phẩm. Nút to = Doanh thu lớn.</p>
+
+            <div class="chart-wrapper" style="height: 800px;">
+                <iframe src="chart_network_graph.html" class="chart-frame"></iframe>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background: var(--secondary); color: white; padding: 40px 0; text-align: center;">
+        <div class="container">
+            <p>© 2025 Nhóm 3 - Báo cáo Data Mining</p>
+        </div>
+    </footer>
+
+</body>
+</html>
