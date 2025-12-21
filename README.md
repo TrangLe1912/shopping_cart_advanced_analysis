@@ -258,20 +258,20 @@ Và đây là 4 gương mặt tiêu biểu trên sân khấu:
 
 ## 📊 Trực quan hóa 
 ### 🔗 Sơ Đồ Mạng Lưới (Network Graph)
-![Comparison Chart](images\network_graph.png)
+![Comparison Chart](images/network_graph.png)
 * **Mục tiêu:** Xác định các cặp sản phẩm thường xuyên được mua cùng nhau (dựa trên chỉ số Support/Confidence).
 * **Phát hiện chính:** Nhận diện các liên kết cơ bản nhưng bền vững như `SHIPPING - POSTAGE`, `WOODEN STAR - WOODEN TREE`, và `SUGAR BOWL - TEA SET`.
 * **Ứng dụng:** Cơ sở cho các chiến dịch **Bán chéo (Cross-selling)** đơn giản.
 ---
 ### 💎 Đồ Thị Mạng Trọng Số (Weighted Network Graph)
-![Comparison Chart](images\dongchay.png)
+![ComparisonChart](images/dongchay.png)
 * **Mục tiêu:** Tích hợp yếu tố doanh thu/lợi nhuận vào các mối liên kết mạng lưới.
 * **Phát hiện chính:** * Các nút màu xanh đậm (trọng số 35-40) thể hiện các cụm mang lại giá trị kinh tế cực lớn, điển hình là bộ ba sản phẩm **Beaker (Pink, Blue, Red Vintage Spot)**.
     * Cụm đồ dùng trẻ em (**Dolly Girl** & **Spaceboy**) cho thấy dòng chảy doanh thu ổn định khi được bán theo bộ.
 * **Ứng dụng:** Xác định các **Gói sản phẩm (Product Bundles)** cao cấp để tối ưu hóa doanh thu.
 ---
 ### ☀️ Biểu Đồ Sunburst: Cấu Trúc Dòng Tiền & Đòn Bẩy
-![Comparison Chart](images\newplot.png)
+![Comparison](images/newplot.png)
 * **Mục tiêu:** Phân tích phân cấp các combo sản phẩm và hiệu quả tài chính thông qua chỉ số **Financial Leverage**.
 * **Phát hiện chính:**
     * **Đòn bẩy cao (Xanh đậm ~5.5):** Các combo có sự góp mặt của `DOTCOM POSTAGE` kết hợp cùng `JAM MAKING SET PRINTED` hoặc `SUKI SHOULDER BAG` mang lại hiệu quả lợi nhuận tốt nhất.
@@ -359,7 +359,7 @@ Phân loại và xử lý sản phẩm dựa trên vị thế chiến lược c�
 | **CASH COWS** | Bán chạy, Giá trị trung bình | Sử dụng làm sản phẩm "mồi" để thu hút khách hàng đến cửa hàng. |
 | **DOGS** | Thấp về cả tần suất & giá trị | Thanh lý xả kho hoặc dùng làm quà tặng kèm để giải phóng không gian lưu kho. |
 
-![Image of BCG growth-share matrix](images/BGCminhhoa.jpg)
+![Image](images/BGCminhhoa.jpg)
 ### 2.2. Chiến Lược Đóng Gói (Bundling) & Bán Chéo (Cross-selling)
 Tối ưu hóa giỏ hàng bằng cách tận dụng các mối liên kết mạng lưới:
 
