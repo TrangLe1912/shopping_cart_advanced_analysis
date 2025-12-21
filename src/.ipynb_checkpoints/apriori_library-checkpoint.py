@@ -25,7 +25,6 @@ import networkx as nx
 # 1. DATA CLEANER
 # =========================================================
 
-
 class DataCleaner:
     """
     A class for cleaning and preprocessing retail transaction data.
@@ -92,7 +91,7 @@ class DataCleaner:
         """
         if self.df is None:
             raise ValueError("Data not loaded. Please call load_data() first.")
-
+        
         # Thêm cột TotalPrice
         self.df["TotalPrice"] = self.df["Quantity"] * self.df["UnitPrice"]
 
@@ -166,7 +165,7 @@ class DataCleaner:
             {
                 "InvoiceDate": lambda x: (snapshot_date - x.max()).days,  # Recency
                 "InvoiceNo": "nunique",  # Frequency
-                "TotalPrice": "sum",  # Monetary
+                "TotalPrice": "sum",     # Monetary
             }
         )
 
@@ -201,7 +200,6 @@ class DataCleaner:
 # =========================================================
 # 2. BASKET PREPARER
 # =========================================================
-
 
 class BasketPreparer:
     """
@@ -288,7 +286,6 @@ class BasketPreparer:
 # =========================================================
 # 3. APRIORI ASSOCIATION RULES MINER
 # =========================================================
-
 
 class AssociationRulesMiner:
     """
@@ -438,7 +435,6 @@ class AssociationRulesMiner:
         rules_df.to_csv(output_path, index=False)
         print(f"Đã lưu luật vào: {output_path}")
 
-
 # =========================================================
 # 4. FP-GROWTH ASSOCIATION RULES MINER
 # =========================================================
@@ -474,7 +470,7 @@ class FPGrowthMiner:
 
         Args:
             min_support (float): Ngưỡng support tối thiểu.
-            max_len (int ): Độ dài tối đa của itemset.
+            max_len (int | None): Độ dài tối đa của itemset.
             use_colnames (bool): True nếu muốn itemsets dùng tên cột.
 
         Returns:
@@ -596,7 +592,6 @@ class FPGrowthMiner:
         rules_df.to_csv(output_path, index=False)
         print(f"Đã lưu luật vào: {output_path}")
 
-
 # =========================================================
 # 5. APRIORI vs FP-GROWTH COMPARISON HELPERS
 # =========================================================
@@ -634,7 +629,9 @@ def benchmark_apriori_vs_fpgrowth(
     rules_ap = apriori_miner.generate_rules(metric=metric, min_threshold=min_threshold)
     t_ap = time.time() - t0
 
-    avg_len_ap = fi_ap["itemsets"].apply(len).mean() if not fi_ap.empty else 0.0
+    avg_len_ap = (
+        fi_ap["itemsets"].apply(len).mean() if not fi_ap.empty else 0.0
+    )
 
     # --- FP-Growth ---
     fpg_miner = FPGrowthMiner(basket_bool=basket_bool)
@@ -647,7 +644,9 @@ def benchmark_apriori_vs_fpgrowth(
     rules_fp = fpg_miner.generate_rules(metric=metric, min_threshold=min_threshold)
     t_fp = time.time() - t0
 
-    avg_len_fp = fi_fp["itemsets"].apply(len).mean() if not fi_fp.empty else 0.0
+    avg_len_fp = (
+        fi_fp["itemsets"].apply(len).mean() if not fi_fp.empty else 0.0
+    )
 
     summary = pd.DataFrame(
         {
@@ -671,7 +670,6 @@ def benchmark_apriori_vs_fpgrowth(
 # =========================================================
 # 6. DATA VISUALIZER (EDA + RFM + ASSOCIATION RULES)
 # =========================================================
-
 
 class DataVisualizer:
     """
@@ -830,7 +828,7 @@ class DataVisualizer:
         plt.tight_layout()
         plt.show()
 
-    # Apriori visualizations
+# Apriori visualizations
 
     @staticmethod
     def _itemset_to_str(itemset):
@@ -848,10 +846,11 @@ class DataVisualizer:
         self,
         frequent_itemsets: pd.DataFrame,
         top_n: int = 20,
-        min_len=None,
-        max_len=None,
+        min_len = None,
+        max_len = None,
         title: str = "Top frequent itemsets theo support",
     ):
+
         """
         Vẽ biểu đồ cột thể hiện các tập mục phổ biến nhất theo support.
 
@@ -863,10 +862,7 @@ class DataVisualizer:
             max_len: chỉ lấy các itemset có độ dài <= max_len (nếu không None).
             title: tiêu đề biểu đồ.
         """
-        if (
-            "itemsets" not in frequent_itemsets.columns
-            or "support" not in frequent_itemsets.columns
-        ):
+        if "itemsets" not in frequent_itemsets.columns or "support" not in frequent_itemsets.columns:
             raise ValueError("frequent_itemsets cần có cột 'itemsets' và 'support'.")
 
         fi = frequent_itemsets.copy()
@@ -935,9 +931,7 @@ class DataVisualizer:
             title: tiêu đề chung của biểu đồ.
         """
         if "rule_str" not in rules_df.columns:
-            raise ValueError(
-                "rules_df cần có cột 'rule_str' (gọi add_readable_rule_str() trước)."
-            )
+            raise ValueError("rules_df cần có cột 'rule_str' (gọi add_readable_rule_str() trước).")
         if sort_by not in rules_df.columns:
             raise ValueError(f"rules_df không có cột '{sort_by}' để sắp xếp.")
 
@@ -1110,11 +1104,10 @@ class DataVisualizer:
         plt.ylabel("Antecedent")
         plt.tight_layout()
         plt.show()
-
     def plot_rules_support_confidence_scatter_interactive(
         self,
         rules_df: pd.DataFrame,
-        title: str = "Biểu đồ tương tác: Support vs Confidence (màu & kích thước = Lift)",
+        title: str = "Biểu đồ tương tác: Support vs Confidence (màu & kích thước = Lift)"
     ):
         """
         Biểu đồ scatter tương tác bằng Plotly:
@@ -1130,9 +1123,7 @@ class DataVisualizer:
 
         # Đảm bảo có rule_str (nếu chưa thì gợi ý)
         if "rule_str" not in rules_df.columns:
-            print(
-                "rules_df chưa có cột 'rule_str'. Hãy gọi miner.add_readable_rule_str() trước."
-            )
+            print("rules_df chưa có cột 'rule_str'. Hãy gọi miner.add_readable_rule_str() trước.")
             return
 
         fig = px.scatter(
@@ -1154,8 +1145,8 @@ class DataVisualizer:
     def plot_rules_network(
         self,
         rules_df: pd.DataFrame,
-        max_rules: int = 100,
-        min_lift: float = None,
+        max_rules: int | None = 100,
+        min_lift: float | None = None,
         title: str = "Mạng lưới các luật kết hợp (Arrow: antecedent → consequent)",
         figsize: tuple = (12, 8),
     ):
