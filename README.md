@@ -385,7 +385,7 @@ Tập trung vào các nhóm sản phẩm mang lại hiệu quả sử dụng v�
 ## Link code & note book
 - Notebook : nhom3.ipynb, nhom3_nangcao.ipynb, run_papermill.py
 - Repo  : https://github.com/VINH1811/shopping_cart_advanced_analysis.git
-- web : 
+- web : https://vinh1811.github.io/lab2-datamining/
 ---
 ## Link slide 
 - link : 
