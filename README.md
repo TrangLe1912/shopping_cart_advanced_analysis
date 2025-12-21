@@ -23,11 +23,9 @@ Dự án này thực hiện phân tích giỏ hàng (Market Basket Analysis) tr�
 ---
 
 ## 📑 Mục lục
-1. [Giới thiệu Pipeline](#giới-thiệu-pipeline)
-2. [Thực nghiệm & So sánh Hiệu năng](#thực-nghiệm--so-sánh-hiệu-năng)
-3. [Đánh giá Luật theo Giá trị Kinh doanh](#đánh-giá-luật-theo-giá-trị-kinh-doanh)
-4. [Trực quan hóa Nâng cao](#trực-quan-hóa-nâng-cao)
-5. [Hướng dẫn Cài đặt](#hướng dẫn-cài-đặt)
+1. [Giới thiệu](#giới-thiệu)
+2. [Kế hoạch thực nghiệm & mỏ ngọc ẩn](#kế-hoạch-thực-nghiệm-&-mỏ-ngọc-ẩn)
+3. [KẾT LUẬN VÀ ĐỀ XUẤT CHIẾN LƯỢC KINH DOANH](#kết-luận-và-đề-xuất-chiến-lược-kinh-doanh)
 ---
 # 1 Giới thiệu
 ## Cuộc chiến Apriori & FP-Growth
@@ -332,7 +330,7 @@ Dựa trên kết quả khai phá dữ liệu, Nhóm 3 đề xuất:
     * Đào tạo nhân viên bán hàng: Khi khách chọn `TEA SET`, bắt buộc gợi ý thêm `SUGAR BOWL` vì dữ liệu chứng minh tỉ lệ thành công cực cao.
 
 ---
-# 🏁 KẾT LUẬN VÀ ĐỀ XUẤT CHIẾN LƯỢC KINH DOANH
+#  3. KẾT LUẬN VÀ ĐỀ XUẤT CHIẾN LƯỢC KINH DOANH
 
 Nghiên cứu này không chỉ dừng lại ở việc tìm ra các tập mục phổ biến mà còn đi sâu vào giá trị kinh tế thực tế, giúp chuyển đổi dữ liệu thô thành lợi nhuận chiến lược thông qua thuật toán **High-Utility Itemset Mining (HUIM)**.
 
