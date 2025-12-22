@@ -192,47 +192,70 @@ Cây này lưu trữ tất cả thông tin nhưng rất gọn. Sữa xuất hi�
 **Ưu điểm:**
 - Chỉ quét dữ liệu 2 lần
 - Không sinh ứng viên
-- Nhanh hơn Apriori rất nhiều (thường 5-10 lần)
-- Hiệu quả với dữ liệu lớn
+- Nhanh hơn Apriori với dữ liệu dense và min_support thấp
+- Hiệu quả với dữ liệu lớn có mật độ cao
 
 **Nhược điểm:**
 - Phức tạp hơn để hiểu và cài đặt
 - Tốn bộ nhớ để lưu FP-Tree
+- **Có thể chậm hơn Apriori với dữ liệu sparse** (như bộ dữ liệu này!)
 - Khó debug khi có vấn đề
 
 ### Kết Quả So Sánh Trên Dữ Liệu Thực Tế
 
 Chúng ta đã chạy cả hai thuật toán trên cùng dữ liệu với cùng tham số:
-- min_support = 0.01 (1%)
+- min_support = 0.02 (2%)
 - max_length = 3
 - metric = lift
 - min_threshold = 1.0
 
-**Kết quả:**
+**⚠️ Kết quả bất ngờ: Apriori nhanh hơn FP-Growth!**
 
-| Tiêu chí | Apriori | FP-Growth |
-|----------|---------|-----------|
-| Số itemsets tìm được | 2,814 | 2,814 |
-| Số luật tìm được | 176 | 176 |
-| Thời gian thực thi | Chậm hơn | Nhanh hơn 5-10 lần |
-| Bộ nhớ sử dụng | Thấp | Cao hơn |
-| Luật giống nhau | 100% | 100% |
+| min_support | Apriori (giây) | FP-Growth (giây) | Tỷ lệ FP/Apriori | Thắng |
+|-------------|----------------|------------------|------------------|-------|
+| 0.05 | 0.16 | 3.89 | 24.7x chậm hơn | Apriori |
+| 0.04 | 0.17 | 3.29 | 19.3x chậm hơn | Apriori |
+| 0.03 | 0.53 | 5.30 | 10.0x chậm hơn | Apriori |
+| 0.02 | 2.25 | 9.20 | 4.1x chậm hơn | Apriori |
+| 0.015 | 7.56 | 18.85 | 2.5x chậm hơn | Apriori |
 
-**Phân tích:**
+**🔬 Tại sao kết quả ngược với lý thuyết?**
 
-1. Cả hai thuật toán đều tìm ra chính xác 176 luật giống hệt nhau. Điều này chứng minh tính đúng đắn của cả hai phương pháp.
+Nguyên nhân chính là **dữ liệu cực kỳ sparse (thưa)**:
 
-2. FP-Growth nhanh hơn đáng kể. Với dữ liệu 400,000 giao dịch, FP-Growth hoàn thành trong vài giây, trong khi Apriori mất vài chục giây.
+| Đặc điểm | Giá trị | Ý nghĩa |
+|----------|---------|---------|
+| Số giao dịch | 18,021 | - |
+| Số sản phẩm | 4,007 | Rất nhiều sản phẩm |
+| **Tỷ lệ ô = 1** | **0.66%** | **Cực kỳ thưa!** |
+| Trung bình SP/giao dịch | ~26 | Mỗi đơn chỉ có 26/4007 sản phẩm |
 
-3. Sự khác biệt về tốc độ sẽ càng rõ rệt hơn khi dữ liệu lớn hơn hoặc min_support thấp hơn.
+**Giải thích chi tiết:**
 
-**Kết luận:**
+1. **FP-Growth** phải xây dựng FP-Tree cho toàn bộ 4,007 sản phẩm trước khi mining. Chi phí xây tree này là **cố định** và không phụ thuộc min_support. Với dữ liệu thưa, cây rất "rộng" và tốn thời gian traversal.
 
-Nếu bạn làm việc với dữ liệu nhỏ (vài nghìn giao dịch) và muốn một giải pháp đơn giản, Apriori là lựa chọn tốt.
+2. **Apriori** với min_support cao (0.02-0.05) sẽ loại bỏ hầu hết sản phẩm ngay từ vòng đầu tiên (chỉ còn vài chục sản phẩm thỏa mãn). Do đó, số lượng candidates cần kiểm tra rất ít.
 
-Nếu bạn làm việc với dữ liệu lớn (hàng trăm nghìn giao dịch trở lên) hoặc cần kết quả nhanh, FP-Growth là lựa chọn ưu tiên.
+3. **mlxtend implementation**: Hàm `apriori()` trong mlxtend được tối ưu với NumPy vectorization, trong khi `fpgrowth()` có overhead lớn hơn.
 
-Trong môi trường sản xuất thực tế với dữ liệu lớn và yêu cầu xử lý nhanh, FP-Growth được khuyên dùng.
+** Khi nào mỗi thuật toán thắng?**
+
+| Điều kiện | Apriori thắng | FP-Growth thắng |
+|-----------|------------------|-------------------|
+| Mật độ dữ liệu | Sparse (<5%) | Dense (>10%) |
+| min_support | Cao (>0.01) | Thấp (<0.005) |
+| Số frequent itemsets | Ít (<1,000) | Nhiều (>10,000) |
+| Số sản phẩm | Nhiều (>1,000) | Ít-vừa (<500) |
+
+** Bài học thực tiễn:**
+
+> **Lý thuyết không phải lúc nào cũng đúng với mọi loại dữ liệu!**
+>
+> - FP-Growth nhanh hơn với dữ liệu **dense** và **min_support thấp**
+> - Apriori có thể nhanh hơn với dữ liệu **sparse** và **min_support cao**  
+> - Luôn cần **benchmark trên dữ liệu thực tế** trước khi chọn thuật toán
+>
+> Với bộ dữ liệu UK Online Retail này (sparse, nhiều sản phẩm), **Apriori là lựa chọn tốt hơn**.
 
 ---
 
