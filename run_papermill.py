@@ -120,4 +120,16 @@ pm.execute_notebook(
     kernel_name="python3",
 )
 
+pm.execute_notebook(
+    "notebooks/nhom3.ipynb",
+    "notebooks/runs/nhom3_run.ipynb",
+    kernel_name="python3",
+)
+
+pm.execute_notebook(
+    "notebooks/nhom3_nangcao.ipynb",
+    "notebooks/runs/nhom3_nangcao_run.ipynb",
+    kernel_name="python3",
+)
+
 print("Đã chạy xong pipeline")
