@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Shopping Cart Library
+Thư Viện Phân Tích Giỏ Hàng (Shopping Cart Library)
 
-This library contains classes for data cleaning, feature engineering,
-and association rule analysis for shopping cart.
+Thư viện này chứa các class để làm sạch dữ liệu, xây dựng features,
+và phân tích luật kết hợp (association rules) cho dữ liệu giỏ hàng.
 """
 
 import datetime as dt
@@ -22,23 +22,23 @@ import networkx as nx
 
 
 # =========================================================
-# 1. DATA CLEANER
+# 1. LÀM SẠCH DỮ LIỆU (DATA CLEANER)
 # =========================================================
 
 class DataCleaner:
     """
-    A class for cleaning and preprocessing retail transaction data.
+    Class để làm sạch và tiền xử lý dữ liệu giao dịch bán lẻ.
 
-    This class handles data loading, cleaning operations, and basic exploratory
-    data analysis for online retail datasets.
+    Class này xử lý việc load dữ liệu, các thao tác làm sạch,
+    và phân tích khám phá dữ liệu cơ bản (EDA) cho bộ dữ liệu bán lẻ trực tuyến.
     """
 
     def __init__(self, data_path):
         """
-        Initialize the DataCleaner with data path.
+        Khởi tạo DataCleaner với đường dẫn dữ liệu.
 
         Args:
-            data_path (str): Path to the raw data file
+            data_path (str): Đường dẫn tới file dữ liệu gốc
         """
         self.data_path = data_path
         self.df = None
@@ -47,10 +47,10 @@ class DataCleaner:
 
     def load_data(self):
         """
-        Load and display basic information about the dataset.
+        Load và hiển thị thông tin cơ bản về bộ dữ liệu.
 
         Returns:
-            pd.DataFrame: Loaded dataframe
+            pd.DataFrame: DataFrame đã được load
         """
         dtype = dict(
             InvoiceNo=np.object_,
@@ -84,10 +84,10 @@ class DataCleaner:
 
     def clean_data(self):
         """
-        Clean the dataset by removing invalid records and focusing on UK customers.
+        Làm sạch dữ liệu bằng cách loại bỏ bản ghi không hợp lệ và chỉ giữ khách hàng UK.
 
         Returns:
-            pd.DataFrame: Cleaned UK dataset
+            pd.DataFrame: Bộ dữ liệu UK đã được làm sạch
         """
         if self.df is None:
             raise ValueError("Data not loaded. Please call load_data() first.")
@@ -113,7 +113,7 @@ class DataCleaner:
 
     def create_time_features(self):
         """
-        Create time-based features for analysis.
+        Tạo các features dựa trên thời gian để phân tích.
         """
         if self.df_uk is None:
             raise ValueError("Cleaned UK data not available. Call clean_data() first.")
@@ -123,7 +123,7 @@ class DataCleaner:
 
     def add_total_price(self):
         """
-        Add TotalPrice column (Quantity * UnitPrice) to cleaned UK data.
+        Thêm cột TotalPrice (Quantity * UnitPrice) vào dữ liệu UK đã làm sạch.
         """
         if self.df_uk is None:
             raise ValueError("Cleaned UK data not available. Call clean_data() first.")
@@ -133,15 +133,15 @@ class DataCleaner:
 
     def compute_rfm(self, snapshot_date=None):
         """
-        Compute RFM (Recency, Frequency, Monetary) for each customer based on cleaned UK data.
+        Tính toán RFM (Recency, Frequency, Monetary) cho mỗi khách hàng dựa trên dữ liệu UK đã làm sạch.
 
         Args:
             snapshot_date (datetime or str, optional):
-                Reference date for Recency calculation.
-                - If None: use max(InvoiceDate) + 1 day.
+                Ngày tham chiếu để tính Recency.
+                - Nếu None: sử dụng max(InvoiceDate) + 1 ngày.
 
         Returns:
-            pd.DataFrame: RFM dataframe with columns [CustomerID, Recency, Frequency, Monetary]
+            pd.DataFrame: DataFrame RFM với các cột [CustomerID, Recency, Frequency, Monetary]
         """
         if self.df_uk is None:
             raise ValueError("Cleaned UK data not available. Call clean_data() first.")
@@ -183,10 +183,10 @@ class DataCleaner:
 
     def save_cleaned_data(self, output_dir="../data/processed"):
         """
-        Save cleaned data to specified directory.
+        Lưu dữ liệu đã làm sạch vào thư mục chỉ định.
 
         Args:
-            output_dir (str): Output directory path
+            output_dir (str): Đường dẫn thư mục output
         """
         if self.df_uk is None:
             raise ValueError("Cleaned UK data not available. Call clean_data() first.")
@@ -198,15 +198,15 @@ class DataCleaner:
 
 
 # =========================================================
-# 2. BASKET PREPARER
+# 2. CHUẨN BỊ GIỎ HÀNG (BASKET PREPARER)
 # =========================================================
 
 class BasketPreparer:
     """
-    A class for preparing basket data for association rule mining.
+    Class để chuẩn bị dữ liệu giỏ hàng cho khai thác luật kết hợp.
 
-    This class transforms transaction data into a format suitable for
-    applying the Apriori algorithm.
+    Class này chuyển đổi dữ liệu giao dịch sang định dạng phù hợp
+    để áp dụng thuật toán Apriori hoặc FP-Growth.
     """
 
     def __init__(
@@ -217,13 +217,13 @@ class BasketPreparer:
         quantity_col: str = "Quantity",
     ):
         """
-        Initialize the BasketPreparer with cleaned dataframe.
+        Khởi tạo BasketPreparer với dataframe đã làm sạch.
 
         Args:
-            df (pd.DataFrame): Cleaned transaction-level dataframe
-            invoice_col (str): Column name for invoice number
-            item_col (str): Column name for item description
-            quantity_col (str): Column name for item quantity
+            df (pd.DataFrame): DataFrame cấp độ giao dịch đã được làm sạch
+            invoice_col (str): Tên cột chứa số hóa đơn
+            item_col (str): Tên cột chứa mô tả sản phẩm
+            quantity_col (str): Tên cột chứa số lượng sản phẩm
         """
         self.df = df
         self.invoice_col = invoice_col
@@ -234,10 +234,10 @@ class BasketPreparer:
 
     def create_basket(self):
         """
-        Create a basket format dataframe for Apriori algorithm.
+        Tạo dataframe dạng giỏ hàng cho thuật toán Apriori.
 
         Returns:
-            pd.DataFrame: Basket format dataframe
+            pd.DataFrame: DataFrame dạng giỏ hàng (mỗi hàng là 1 giao dịch, mỗi cột là 1 sản phẩm)
         """
 
         basket = (
@@ -252,13 +252,13 @@ class BasketPreparer:
 
     def encode_basket(self, threshold: int = 1):
         """
-        Encode the basket dataframe into boolean format.
+        Mã hóa dataframe giỏ hàng sang định dạng boolean.
 
         Args:
-            threshold (int): Minimum quantity to consider an item as present
+            threshold (int): Số lượng tối thiểu để coi như sản phẩm có mặt trong giỏ
 
         Returns:
-            pd.DataFrame: Boolean encoded basket dataframe
+            pd.DataFrame: DataFrame giỏ hàng đã được mã hóa boolean (True/False)
         """
 
         if self.basket is None:
@@ -270,10 +270,10 @@ class BasketPreparer:
 
     def save_basket_bool(self, output_path: str):
         """
-        Save the boolean encoded basket dataframe to a Parquet file.
+        Lưu dataframe giỏ hàng dạng boolean vào file Parquet.
 
         Args:
-            output_path (str): Path to save the Parquet file
+            output_path (str): Đường dẫn để lưu file Parquet
         """
         if self.basket_bool is None:
             raise ValueError("Basket not encoded. Please call encode_basket() first.")
@@ -284,15 +284,15 @@ class BasketPreparer:
 
 
 # =========================================================
-# 3. APRIORI ASSOCIATION RULES MINER
+# 3. KHAI THÁC LUẬT KẾT HỢP (ASSOCIATION RULES MINER)
 # =========================================================
 
 class AssociationRulesMiner:
     """
-    A class for mining association rules using the Apriori algorithm.
+    Class để khai thác luật kết hợp sử dụng thuật toán Apriori hoặc FP-Growth.
 
-    This class applies the Apriori algorithm to the basket data and extracts
-    association rules based on specified metrics.
+    Class này áp dụng thuật toán Apriori/FP-Growth lên dữ liệu giỏ hàng và
+    trích xuất luật kết hợp dựa trên các chỉ số được chỉ định.
     """
 
     def __init__(self, basket_bool: pd.DataFrame):
