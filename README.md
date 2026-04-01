@@ -1,183 +1,54 @@
-# Shopping Cart Analysis
+# Tóm tắt
 
-Phân tích dữ liệu bán lẻ nhằm khám phá mối quan hệ giữa các sản phẩm thường được mua cùng nhau bằng các kỹ thuật **Association Rule Mining** như **Apriori** và **FP-Growth**.  
-Project triển khai pipeline đầy đủ từ xử lý dữ liệu → khai thác luật → so sánh thuật toán → trực quan hóa kết quả.
-
+- Vấn đề: So sánh hai thuật toán tìm tập phổ biến/luật kết hợp (Apriori và FP‑Growth) và đánh giá ảnh hưởng của việc gán trọng số theo giá trị hóa đơn lên các chỉ số luật (weighted_support, weighted_confidence, weighted_lift).
+- Mục tiêu: Hiểu độ nhạy tham số (min_support, min_threshold) và thấy khác biệt giữa luật dựa trên tần suất và luật dựa trên giá trị (trọng số).
 ---
 
-## Features
+# Bài Toán & Dữ Liệu
 
-- Làm sạch dữ liệu & xử lý giao dịch lỗi
-- Xây dựng basket matrix (transaction × product)
-- Khai thác tập mục phổ biến (Frequent Itemsets)
-- Sinh luật kết hợp (Association Rules)
-- Hỗ trợ 2 thuật toán:
-  - Apriori
-  - FP-Growth
-- So sánh Apriori vs FP-Growth
-- Các chỉ số đánh giá:
-  - Support
-  - Confidence
-  - Lift
-- Trực quan hóa với:
-  - Bar chart
-  - Scatter plot
-  - Network graph
-  - Biểu đồ tương tác Plotly
-- Tự động hóa pipeline bằng **Papermill**
-- Dashboard tương tác bằng **Streamlit**
+- Dữ liệu: lịch sử giao dịch bán lẻ (InvoiceNo, InvoiceDate, Description, Quantity, UnitPrice, CustomerID). Tính TotalPrice = Quantity * UnitPrice cho mỗi dòng; dùng tổng TotalPrice theo hóa đơn làm trọng số.
+- Output mong muốn: danh sách itemset và luật kết hợp, cùng các chỉ số truyền thống (support, confidence, lift) và các chỉ số có trọng số (weighted_support, weighted_confidence, weighted_lift) để so sánh.
+## Pipeline (mạch xử lý)
 
----
+- Bước 1 — Tiền xử lý: lọc hóa đơn hợp lệ, tính TotalPrice, lọc UK (nếu cần), tạo basket theo InvoiceNo × Description.
+- Bước 2 — Chuyển sang basket_bool: mã hóa sự xuất hiện (quantity >= 1 => True).
+- Bước 3 — Khai thác tập phổ biến:
+Apriori: dễ hiểu, liệt kê tổ hợp tăng dần, nhưng có thể nổ combinatorial khi min_support rất nhỏ.
+FP‑Growth: xây cây FP, thường nhanh hơn và tiết kiệm bộ nhớ khi dữ liệu lớn.
+- Bước 4 — Sinh luật: từ frequent itemsets dùng association_rules để lấy các luật với metric (ví dụ lift) và ngưỡng (min_threshold).
+- Bước 5 — Hậu xử lý trọng số: ghép bảng luật với thông tin hóa đơn để tính:
+weighted_support(A∪B) = sum(weights of invoices containing A∪B) / total_weight
+weighted_confidence = weighted_support(A∪B) / weighted_support(A)
+weighted_lift = weighted_confidence / weighted_support(B)
+(Đã implement trong module WeightedRulesAugmenter.)
 
-## Project Structure
+augmenter = WeightedRulesAugmenter(transactions_df, invoice_col='InvoiceNo', item_col='Description', weight_col='TotalPrice')
+rules_weighted = augmenter.augment_rules(rules_df)
 
-```text
-shopping_cart_advanced_analysis/
-├── data/
-│   ├── raw/
-│   │   └── online_retail.csv
-│   └── processed/
-│       ├── cleaned_uk_data.csv
-│       ├── basket_bool.parquet
-│       ├── rules_apriori_filtered.csv
-│       └── rules_fpgrowth_filtered.csv
-│
-├── notebooks/
-│   ├── preprocessing_and_eda.ipynb
-│   ├── basket_preparation.ipynb
-│   ├── apriori_modelling.ipynb
-│   ├── fp_growth_modelling.ipynb
-│   ├── compare_apriori_fpgrowth.ipynb
-│   └── runs/
-│       ├── preprocessing_and_eda_run.ipynb
-│       ├── basket_preparation_run.ipynb
-│       ├── apriori_modelling_run.ipynb
-│       ├── fp_growth_modelling_run.ipynb
-│       └── compare_apriori_fpgrowth_run.ipynb
-│
-├── src/
-│   └── apriori_library.py
-│
-├── dashboard/
-│   ├── app.py
-│   └── requirements.txt
-│
-├── run_papermill.py
-├── requirements.txt
-└── README.md
-```
+Kết quả chính & trực quan (hướng dẫn phân tích)
+(Phần này là khuôn mẫu báo cáo — sau khi chạy notebook, chèn kết quả cụ thể vào từng mục)
 
----
+- Biểu đồ 1 — Thời gian chạy theo min_support (trục X giảm dần): so sánh runtime_sec của Apriori vs FP‑Growth. Kỳ vọng: Apriori tăng nhanh hơn khi min_support nhỏ.
+- Biểu đồ 2 — Số lượng itemset và số lượng luật theo min_support: cho thấy độ nhạy tham số.
+- Biểu đồ 3 — So sánh top‑10 luật theo lift (thông thường) và theo weighted_lift: bảng hai cột, mỗi hàng là một luật, cho thấy luật nào được nâng lên/hạ xuống khi xét trọng số.
+Bảng tóm tắt các thống kê:
+- Trung bình độ dài itemset, phân phối support/confidence/lift trước và sau trọng số.
+- Số luật lọc được ở các ngưỡng khác nhau.
+Insight mẫu (những điểm cần tìm khi quan sát kết quả thực tế):
 
-## Installation
-
-```bash
-git clone <your_repo_url>
-cd shopping_cart_advanced_analysis
-conda create -n shopping_env python=3.11
-conda activate shopping_env
-pip install -r requirements.txt
-```
-
-Data Preparation
-Đặt file gốc tại:
-
-```bash
-data/raw/online_retail.csv
-```
-File output sẽ được sinh tự động vào:
-
-```bash
-data/processed/
-```
-
-Run Pipeline (Recommended)
-Chạy toàn bộ phân tích chỉ với 1 lệnh:
-
-```bash
-python run_papermill.py
-```
-Kết quả sinh ra:
-
-```bash
-data/processed/
-├── cleaned_uk_data.csv
-├── basket_bool.parquet
-├── rules_apriori_filtered.csv
-└── rules_fpgrowth_filtered.csv
-
-notebooks/runs/
-├── preprocessing_and_eda_run.ipynb
-├── basket_preparation_run.ipynb
-├── apriori_modelling_run.ipynb
-├── fp_growth_modelling_run.ipynb
-└── compare_apriori_fpgrowth_run.ipynb
-```
-
-### Changing Parameters
-Các tham số có thể chỉnh trong `run_papermill.py` hoặc trong cell `PARAMETERS` của mỗi notebook:
-
-```python
-MIN_SUPPORT=0.01
-MAX_LEN=3
-FILTER_MIN_CONF=0.3
-FILTER_MIN_LIFT=1.2
-```
-Papermill cho phép chạy pipeline với cấu hình khác nhau mà không cần sửa notebook gốc.
-
-### Visualization & Results
-Các notebook modelling hiển thị các biểu đồ:
-
-Top luật theo Lift
-
-Top luật theo Confidence
-
-Scatter Support – Confidence – Lift
-
-Network graph giữa các sản phẩm
-
-Biểu đồ Plotly tương tác
-
-Có thể export notebook kết quả sang HTML:
-
-```bash
-jupyter nbconvert notebooks/runs/priori_modelling_run.ipynb --to html
-```
-
-### Ứng dụng thực tế
-Product recommendation
-
-Cross-selling strategy
-
-Combo gợi ý sản phẩm
-
-Phân tích hành vi mua hàng
-
-Sắp xếp sản phẩm tại siêu thị
-
-### Tech Stack
-
-| Công nghệ | Mục đích |
-|----------|----------|
-| Python | Ngôn ngữ chính |
-| Pandas | Xử lý dữ liệu transaction |
-| MLxtend | Apriori / FP-Growth association rules |
-| Papermill | Chạy pipeline notebook tự động |
-| Matplotlib & Seaborn | Visualization biểu đồ tĩnh |
-| Plotly | Dashboard / biểu đồ tương tác |
-| Jupyter Notebook | Môi trường notebook |
-
-### Roadmap
-Streamlit dashboard
-
-Weighted association rules
-
-Correlation-aware rule ranking
-
-
-### Author
-Project được thực hiện bởi:
-Trang Le
-
-📄 License
-MIT — sử dụng tự do cho nghiên cứu, học thuật và ứng dụng nội bộ.
+- Nếu một luật có support thấp nhưng xuất hiện trong các hóa đơn có TotalPrice lớn thì weighted_lift có thể cao hơn so với lift — nghĩa là luật có ý nghĩa về doanh thu dù ít xuất hiện.
+- FP‑Growth thường cho cùng số itemset/luật nhưng nhanh hơn; tuy nhiên kết quả về luật (với cùng ngưỡng support) phải giống nhau về mặt logic nếu implement đúng — khác biệt chính là hiệu năng.
+- Apriori có thể bị “nổ tổ hợp” (combinatorial explosion) khi min_support nhỏ, dẫn đến thời gian và bộ nhớ tăng đột biến.
+- Luật trọng số giúp kinh doanh: ưu tiên những kết hợp thường xuất hiện trong giao dịch có giá trị cao (ví dụ để đề xuất bundle hoặc cross‑sell cho khách có xu hướng chi tiêu lớn).
+## So sánh & Kết luận — Dành cho người ra quyết định
+- Hiệu năng:
+FP‑Growth: ưu tiên nếu dataset lớn hoặc nếu cần chạy nhiều thí nghiệm với support nhỏ.
+Apriori: dễ hiểu, tốt để dạy/giải thích thuật toán và với dataset nhỏ/medium.
+- Độ nhạy tham số:
+Cả hai nhạy với min_support: giảm min_support → tăng số itemset và luật; ảnh hưởng đến thời gian và chất lượng (nhiều luật rác).
+min_threshold (cho metric) giúp lọc luật theo chất lượng (confidence/lift).
+- Giá trị kinh doanh:
+Luật truyền thống (theo tần suất) hợp cho các chiến dịch tăng tần suất mua (cross‑sell phổ biến).
+Luật có trọng số (theo doanh thu) hợp cho tối ưu doanh thu: chọn các gợi ý/bundle cho khách có khả năng chi trả cao, hoặc để định vị sản phẩm cao cấp.
+![alt text](image.png)
+![alt text](image-1.png)

@@ -667,6 +667,129 @@ def benchmark_apriori_vs_fpgrowth(
     }
 
 
+class WeightedRulesAugmenter:
+    """
+    Augment a rules DataFrame with weighted metrics based on invoice-level weights.
+
+    Usage:
+        augmenter = WeightedRulesAugmenter(transactions_df)
+        rules_aug = augmenter.augment_rules(rules_df)
+
+    The augmenter computes:
+        - weighted_support: sum(weights of invoices containing antecedent+consequent) / total_weight
+        - weighted_support_antecedent, weighted_support_consequent
+        - weighted_confidence = weighted_support(A∪B) / weighted_support(A)
+        - weighted_lift = weighted_confidence / weighted_support(B)
+    """
+
+    def __init__(
+        self,
+        transactions_df: pd.DataFrame,
+        invoice_col: str = "InvoiceNo",
+        item_col: str = "Description",
+        weight_col: str = "TotalPrice",
+    ):
+        self.transactions = transactions_df.copy()
+        self.invoice_col = invoice_col
+        self.item_col = item_col
+        self.weight_col = weight_col
+
+        # If weight column missing, try compute from Quantity * UnitPrice
+        if self.weight_col not in self.transactions.columns:
+            if {"Quantity", "UnitPrice"}.issubset(self.transactions.columns):
+                self.transactions[self.weight_col] = (
+                    self.transactions["Quantity"] * self.transactions["UnitPrice"]
+                )
+            else:
+                # fallback: uniform weight per invoice
+                self.transactions[self.weight_col] = 1.0
+
+        # compute invoice weights
+        self.invoice_weights = (
+            self.transactions.groupby(self.invoice_col)[self.weight_col].sum()
+        )
+        self.total_weight = float(self.invoice_weights.sum()) if len(self.invoice_weights) > 0 else 0.0
+
+        # build item -> set(invoices) mapping
+        grouped = self.transactions.groupby([self.item_col, self.invoice_col]).size()
+        # grouped index: (item, invoice)
+        self.invoices_by_item = {}
+        for (item, invoice) in grouped.index:
+            self.invoices_by_item.setdefault(item, set()).add(invoice)
+
+    def _invoices_for_itemset(self, itemset) -> set:
+        """Return set of invoices containing all items in itemset."""
+        if not itemset:
+            return set()
+        item_list = list(itemset)
+        # if an item is not present in mapping => empty set
+        if any(item not in self.invoices_by_item for item in item_list):
+            return set()
+        inv_sets = [self.invoices_by_item[item] for item in item_list]
+        # intersection
+        invoices = set.intersection(*map(set, inv_sets)) if inv_sets else set()
+        return invoices
+
+    def _weighted_support_of_itemset(self, itemset) -> float:
+        invoices = self._invoices_for_itemset(itemset)
+        if not invoices or self.total_weight == 0:
+            return 0.0
+        # sum weights of invoices
+        weights = self.invoice_weights.reindex(list(invoices)).fillna(0.0)
+        return float(weights.sum() / self.total_weight)
+
+    def augment_rules(self, rules_df: pd.DataFrame) -> pd.DataFrame:
+        """Return a copy of rules_df with weighted metrics appended."""
+        if rules_df is None or rules_df.empty:
+            return rules_df
+
+        aug = rules_df.copy()
+
+        ws = []
+        ws_ante = []
+        ws_cons = []
+        wconf = []
+        wlift = []
+
+        for _, row in aug.iterrows():
+            antecedents = row.get("antecedents")
+            consequents = row.get("consequents")
+
+            # ensure they are iterable
+            antecedents_set = set(antecedents) if antecedents is not None else set()
+            consequents_set = set(consequents) if consequents is not None else set()
+
+            both_set = antecedents_set.union(consequents_set)
+
+            w_sup_both = self._weighted_support_of_itemset(both_set)
+            w_sup_a = self._weighted_support_of_itemset(antecedents_set)
+            w_sup_b = self._weighted_support_of_itemset(consequents_set)
+
+            if w_sup_a > 0:
+                w_conf = w_sup_both / w_sup_a
+            else:
+                w_conf = 0.0
+
+            if w_sup_b > 0:
+                w_lift_val = w_conf / w_sup_b if w_sup_b > 0 else 0.0
+            else:
+                w_lift_val = 0.0
+
+            ws.append(w_sup_both)
+            ws_ante.append(w_sup_a)
+            ws_cons.append(w_sup_b)
+            wconf.append(w_conf)
+            wlift.append(w_lift_val)
+
+        aug["weighted_support"] = ws
+        aug["weighted_support_antecedent"] = ws_ante
+        aug["weighted_support_consequent"] = ws_cons
+        aug["weighted_confidence"] = wconf
+        aug["weighted_lift"] = wlift
+
+        return aug
+
+
 # =========================================================
 # 6. DATA VISUALIZER (EDA + RFM + ASSOCIATION RULES)
 # =========================================================
